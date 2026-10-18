@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор подписки — ГАВРИК CLIENT</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Стили для страницы подписок */
+        .grid-subs { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            width: 100%; 
+            max-width: 1100px; 
+            margin: 20px auto; 
+            padding: 0 20px; 
+        }
+        .sub-card { 
+            background: rgba(12, 18, 12, 0.7); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(0, 255, 0, 0.15); 
+            border-radius: 12px; 
+            padding: 25px 15px; 
+            text-align: center; 
+            transition: 0.3s; 
+            cursor: pointer; 
+        }
+        .sub-card:hover, .sub-card.active { 
+            border-color: #00ff00; 
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); 
+            transform: translateY(-3px); 
+        }
+        .sub-card h3 { 
+            font-size: 20px; 
+            margin-bottom: 10px; 
+            color: #fff; 
+        }
+        .sub-price { 
+            font-size: 24px; 
+            color: #00ff00; 
+            font-weight: 800; 
+            margin-bottom: 5px; 
+        }
+        .payment-box { 
+            background: rgba(12, 18, 12, 0.8); 
+            border: 1px solid rgba(0, 255, 0, 0.2); 
+            border-radius: 16px; 
+            max-width: 500px; 
+            width: 90%; 
+            margin: 30px auto; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        .methods { 
+            display: flex; 
+            justify-content: space-around; 
+            margin: 20px 0; 
+        }
+        .method-btn { 
+            background: #000; 
+            border: 1px solid #333; 
+            color: #fff; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.2s; 
+        }
+        .method-btn:hover, .method-btn.selected { 
+            border-color: #00ff00; 
+            color: #00ff00; 
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); 
+        }
+        .back-link { 
+            display: inline-block; 
+            color: #a0b0a0; 
+            text-decoration: none; 
+            margin-top: 15px; 
+            font-size: 14px; 
+        }
+        .back-link:hover { 
+            color: #00ff00; 
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ГАВРИК<span>CLIENT</span></div>
+    </header>
+
+    <h2 style="text-align: center; margin-top: 40px; font-size: 28px;">Выберите тарифный план</h2>
+
+    <div class="grid-subs">
+        <div class="sub-card" onclick="selectSub('7 дней', '99₽')">
+            <h3>7 Дней</h3>
+            <div class="sub-price">99₽</div>
+        </div>
+        <div class="sub-card active" onclick="selectSub('30 дней', '299₽')">
+            <h3>30 Дней</h3>
+            <div class="sub-price">299₽</div>
+        </div>
+        <div class="sub-card" onclick="selectSub('90 дней', '699₽')">
+            <h3>90 Дней</h3>
+            <div class="sub-price">699₽</div>
+        </div>
+        <div class="sub-card" onclick="selectSub('180 дней', '1199₽')">
+            <h3>180 Дней</h3>
+            <div class="sub-price">1199₽</div>
+        </div>
+        <div class="sub-card" onclick="selectSub('Lifetime (Навсегда)', '2499₽')">
+            <h3>Lifetime</h3>
+            <div class="sub-price">2499₽</div>
+        </div>
+    </div>
+
+    <div class="payment-box">
+        <h3 id="selectedInfo">Выбрано: 30 дней (299₽)</h3>
+        <p style="color: #a0b0a0; font-size: 14px; margin-top: 5px;">Выберите удобный способ оплаты:</p>
+        
+        <div class="methods">
+            <button class="method-btn selected" onclick="selectMethod(this)">Банковская карта / СБП</button>
+            <button class="method-btn" onclick="selectMethod(this)">Электронные кошельки</button>
+        </div>
+
+        <button class="btn btn-buy" onclick="startSubscriptionPayment()">Перейти к оплате</button>
+        <br>
+        <a href="index.html" class="back-link">← Вернуться назад</a>
+    </div>
+
+    <script>
+        // Переменные для хранения текущего выбора (по умолчанию 30 дней за 299₽)
+        let currentPrice = 299;
+        let currentTariff = "30 дней";
+
+        // Поменяйте значение ниже на ваш настоящий ID магазина из личного кабинета Aaio после регистрации!
+        // Пока вы его не поменяли, ссылка будет открывать демонстрационную форму кассы.
+        const MY_MERCHANT_ID = "demo_id"; 
+
+        function selectSub(time, price) {
+            document.getElementById('selectedInfo').innerText = "Выбрано: " + time + " (" + price + ")";
+            currentPrice = parseInt(price); 
+            currentTariff = time;
+
+            document.querySelectorAll('.sub-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function selectMethod(element) {
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Логика перехода на официальный платежный шлюз
+        function startSubscriptionPayment() {
+            alert("Перенаправляем на защищенную страницу оплаты кассы на сумму " + currentPrice + "₽");
+            
+            // Генерируем уникальный номер счета по времени (например: sub_719482)
+            const randomOrderNumber = Math.floor(Math.random() * 900000) + 100000;
+            const orderId = "sub_" + randomOrderNumber;
+            
+            // Создаем понятное описание для чека покупателя
+            const description = "Buy GavrikClient: " + currentTariff;
+
+            // Формируем официальную платежную ссылку для перенаправления
+            const paymentUrl = "https://aaio.io" 
+                + "?merchant_id=" + encodeURIComponent(MY_MERCHANT_ID)
+                + "&amount=" + encodeURIComponent(currentPrice)
+                + "&order_id=" + encodeURIComponent(orderId)
+                + "&currency=RUB"
+                + "&desc=" + encodeURIComponent(description);
+            
+            // Переводим браузер на платежную форму кассы
+            window.location.href = paymentUrl;
+        }
+    </script>
+</body>
+</html>
