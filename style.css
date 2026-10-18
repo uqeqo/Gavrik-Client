@@ -1,0 +1,182 @@
+/* Базовые сбросы */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    /* Фоновое фото: затемнение + картинка bg.png */
+    background: linear-gradient(rgba(10, 15, 10, 0.8), rgba(10, 15, 10, 0.8)), url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Шапка сайта */
+header {
+    padding: 20px 5%;
+    background: rgba(10, 12, 10, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 255, 0, 0.15);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+/* Зеленый неоновый акцент для слова CLIENT */
+.logo span {
+    color: #00ff00;
+    text-shadow: 0 0 12px #00ff00;
+}
+
+/* Разделение экрана 50/50 */
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+.left-side, .right-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Блоки в темно-зеленом стиле */
+.box {
+    background: rgba(12, 18, 12, 0.65);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.box h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.box p {
+    color: #a0b0a0;
+    font-size: 14px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* Общие стили для кнопок */
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Кнопка Колеса фортуны */
+.btn-fortune {
+    background: #006600;
+    color: white;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+.btn-fortune:hover {
+    transform: translateY(-3px);
+    background: #008800;
+    box-shadow: 0 0 25px #00ff00; /* Зеленое свечение */
+}
+
+/* Кнопка Купить лаунчер */
+.btn-buy {
+    background: #00ff00;
+    color: #000000; /* Черный текст на зеленой кнопке для читаемости */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+.btn-buy:hover {
+    transform: translateY(-3px);
+    background: #33ff33;
+    box-shadow: 0 0 25px #00ff00; /* Зеленое свечение */
+}
+
+/* Колесо фортуны (Черно-зеленое) */
+.wheel-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 30px;
+}
+
+.pointer {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    color: #00ff00;
+    font-size: 24px;
+    text-shadow: 0 0 8px #00ff00;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px solid #00ff00;
+    position: relative;
+    overflow: hidden;
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.2, 1);
+}
+
+.segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    background: var(--clr);
+    transform-origin: bottom right;
+    transform: rotate(calc(90deg * var(--i)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.segment span {
+    transform: rotate(-45deg);
+    font-size: 13px;
+    font-weight: 800;
+    color: white;
+}
+
+/* Текст на черных сегментах делаем зеленым для стиля */
+.segment[style*="#000000"] span {
+    color: #00ff00;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    body { overflow-y: auto; height: auto; }
+    .main-container { flex-direction: column; }
+    header { text-align: center; }
+}
