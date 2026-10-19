@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Гаврик Client — Лучший чит на Minecraft</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительный стиль для фиолетовой кнопки скачивания на главном экране */
+        .btn-download-hero {
+            background: #660099;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(102, 0, 153, 0.4);
+            text-decoration: none;
+        }
+        .btn-download-hero:hover {
+            background: #7b00bb;
+            box-shadow: 0 0 25px #660099;
+            transform: translateY(-3px);
+        }
+    </style>
 </head>
 <body>
 
@@ -34,9 +48,13 @@
                 <h1>О нас</h1>
                 <p>Мы предоставляем вам лучший приватный клиент для комфортной игры, который даст вам наилучшие впечатления от игры и полный контроль над оппонентами.</p>
                 
+                <!-- Блок кнопок: теперь их три в ряд -->
                 <div class="hero-buttons">
                     <button class="btn btn-buy" onclick="handleBuyRedirect()">⚡ Купить софт</button>
-                    <!-- Кнопка теперь ведет на страницу функций features.html -->
+                    
+                    <!-- Новая кнопка скачивания лаунчера справа от основных -->
+                    <a href="gavrik-client.zip" download class="btn btn-download-hero">📥 Скачать лаунчер</a>
+                    
                     <a href="features.html" class="btn btn-secondary" style="text-decoration: none;">Подробнее →</a>
                 </div>
             </div>
