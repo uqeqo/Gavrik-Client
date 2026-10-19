@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет — ГАВРИК CLIENT</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .lk-container { max-width: 600px; width: 90%; margin: 40px auto; padding-bottom: 60px; }
+        .lk-row { display: flex; flex-direction: column; background: rgba(12, 18, 12, 0.75); border: 1px solid rgba(0, 255, 0, 0.1); border-radius: 12px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .lk-label { background: #00ff00; color: #000; padding: 10px 15px; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+        .lk-value { padding: 15px; font-size: 16px; color: #fff; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+        .lk-btn { background: #004400; border: 1px solid #00ff00; color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; text-decoration: none; }
+        .lk-btn:hover { background: #00ff00; color: #000; }
+        .grid-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn-action-lk { padding: 12px; font-size: 14px; font-weight: bold; text-align: center; border-radius: 8px; border: none; cursor: pointer; color: #fff; text-decoration: none; display: flex; justify-content: center; align-items: center; }
+        .btn-purple { background: #660099; }
+        .btn-purple:hover { background: #7b00bb; box-shadow: 0 0 15px #660099; }
+        .btn-red { background: #990000; grid-column: span 2; }
+        .btn-red:hover { background: #cc0000; box-shadow: 0 0 15px #990000; }
+        .footer-lk { text-align: center; margin-top: 40px; color: #666; font-size: 13px; border-top: 1px solid #222; padding-top: 20px; }
+        .footer-lk a { color: #a0b0a0; text-decoration: none; margin: 0 10px; }
+        .footer-lk a:hover { color: #00ff00; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ГАВРИК<span>CLIENT</span></div>
+        <button class="lk-btn" onclick="logout()">Выйти</button>
+    </header>
+
+    <div class="lk-container">
+        <h2 style="margin-bottom: 25px; font-size: 24px; text-align: center;">Личный кабинет пользователя</h2>
+
+        <!-- Строки с данными [image_3K1kMx.png] -->
+        <div class="lk-row">
+            <div class="lk-label">🆔 UID</div>
+            <div class="lk-value" id="lkUID">205264</div>
+        </div>
+
+        <div class="lk-row">
+            <div class="lk-label">👤 Логин</div>
+            <div class="lk-value" id="lkLogin">Uqeqo</div>
+        </div>
+
+        <div class="lk-row">
+            <div class="lk-label">🛠️ Группа</div>
+            <div class="lk-value">Пользователь</div>
+        </div>
+
+        <div class="lk-row">
+            <div class="lk-label">📅 Дата регистрации</div>
+            <div class="lk-value" id="lkRegDate">19.10.2026 14:56</div>
+        </div>
+
+        <div class="lk-row">
+            <div class="lk-label">🖥️ HWID</div>
+            <div class="lk-value">
+                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">d7b6cbde6a9f95405e00b402</span>
+                <button class="lk-btn" onclick="alert('Запрос на сброс HWID отправлен модерации!')">🔒 Сбросить</button>
+            </div>
+        </div>
+
+        <div class="lk-row">
+            <div class="lk-label">📦 Купленные товары</div>
+            <div class="lk-value">
+                <span id="lkStatus">Доступ отсутствует</span>
+                <button class="lk-btn" id="infoProductBtn" onclick="showProductModal()" style="display:none;">ℹ️ Подробнее</button>
+            </div>
+        </div>
+
+        <!-- Кнопки действий [image_DSKzbu.png] -->
+        <div class="grid-actions">
+            <button class="btn-action-lk btn-purple" onclick="alert('Укажите ваш юзернейм в поддержке для привязки Telegram')">✈️ Привязать Telegram</button>
+            <button class="btn-action-lk btn-purple" onclick="activateKey()">🔑 Активация ключа</button>
+            
+            <!-- Кнопка скачивания лаунчера (ведет на наш заготовленный .zip архив с читом) -->
+            <a href="gavrik-client.zip" download class="btn-action-lk btn-purple" style="grid-column: span 2;">📥 Скачать лаунчер (.EXE)</a>
+            
+            <button class="btn-action-lk btn-red" onclick="logout()">❌ Выйти из аккаунта</button>
+        </div>
+
+        <!-- Футер личного кабинета [image_DSKzbu.png] -->
+        <div class="footer-lk">
+            <p><strong>CELESTIAL STYLED / GAVRIK CLIENT</strong></p>
+            <p style="margin: 5px 0 15px;">Почта для связи: ntfhelp@mail.ru (ПН-ПТ 10:00-18:00 МСК)</p>
+            <a href="#">Политика конфиденциальности</a> | 
+            <a href="#">Пользовательское соглашение (Оферта)</a> | 
+            <a href="#">Правила пользования</a>
+        </div>
+    </div>
+
+    <script>
+        // Загрузка сохраненных данных при открытии ЛК
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = 'auth.html';
+                return;
+            }
+            document.getElementById('lkUID').innerText = localStorage.getItem('uid');
+            document.getElementById('lkLogin').innerText = localStorage.getItem('username');
+            document.getElementById('lkRegDate').innerText = localStorage.getItem('regDate');
+            document.getElementById('lkHWID').innerText = localStorage.getItem('hwid').substring(0, 18) + '...';
+            
+            // Если была совершена покупка, меняем плашку подписок
+            if (localStorage.getItem('hasLicense') === 'true') {
+                document.getElementById('lkStatus').innerText = 'Лицензия ГАВРИК CLIENT (Активна)';
+                document.getElementById('infoProductBtn').style.display = 'block';
+            }
+        };
+
+        function activateKey() {
+            const key = prompt('Введите ваш лицензионный ключ активации:');
+            if (key) {
+                localStorage.setItem('hasLicense', 'true');
+                alert('Ключ успешно активирован! Подписка добавлена на ваш аккаунт.');
+                location.reload();
+            }
+        }
+
+        function showProductModal() {
+            alert('Купленные товары:\n• Лицензия ГАВРИК CLIENT\n• Доступ: Навсегда (Lifetime)\n• Обновления: Включены');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
