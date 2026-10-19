@@ -6,7 +6,6 @@
     <title>Покупка подписки — ГАВРИК CLIENT</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Специфичные стили для страницы оплаты в стиле Celestial */
         .pay-container {
             max-width: 500px;
             width: 90%;
@@ -28,7 +27,6 @@
             line-height: 1.4;
         }
 
-        /* Переключатель тарифов (табы) */
         .tab-container {
             display: flex;
             background: rgba(0, 0, 0, 0.4);
@@ -57,7 +55,6 @@
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
         }
 
-        /* Вывод цены и скидок */
         .price-display {
             font-size: 16px;
             color: #ffffff;
@@ -92,7 +89,6 @@
             vertical-align: middle;
         }
 
-        /* Поле промокода */
         .promo-input {
             width: 100%;
             padding: 14px;
@@ -112,7 +108,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.15);
         }
 
-        /* Кнопка сторонней оплаты (FunPay) */
         .btn-funpay {
             background: #ffffff;
             color: #000000;
@@ -159,57 +154,47 @@
     </header>
 
     <div class="pay-container">
-        <!-- Динамический заголовок подписки -->
         <h2 id="payTitle">Покупка «Клиент 1.21.4 на 30 дней»</h2>
 
-        <!-- Переключатель периодов (Табы) -->
         <div class="tab-container">
             <button class="tab-btn active" onclick="changeTariff('30 дней', 299, 0, 0)">30 дней</button>
             <button class="tab-btn" onclick="changeTariff('90 дней', 499, 554, 10)">90 дней</button>
             <button class="tab-btn" onclick="changeTariff('Навсегда', 699, 932, 25)">Навсегда</button>
         </div>
 
-        <!-- Блок вывода итоговой стоимости -->
         <div class="price-display" id="priceDisplay">
             К оплатe:<span class="price-amount">299 ₽</span>
         </div>
 
-        <!-- Поле для ввода промокода -->
         <input type="text" class="promo-input" placeholder="Введите промокод (не обязательно)">
 
-        <!-- Основная кнопка оплаты -->
         <button class="btn btn-buy" onclick="executePayment()">➔ Продолжить к оплате</button>
         
-        <!-- Дополнительный метод через FunPay -->
         <button class="btn btn-funpay" onclick="alert('Перенаправление на продавца FunPay...')">
             Оплатить через &nbsp; <span>FUN<font>PAY</font></span>
         </button>
 
-        <!-- Кнопка возврата -->
         <button class="btn btn-cancel" onclick="window.location.href='profile.html'">✕ Отмена</button>
     </div>
 
     <script>
-        // Глобальные переменные для хранения выбранного тарифа
         let activeTariffName = "30 дней";
         let activePrice = 299;
-
-        // ID вашего магазина Aaio (демо-значение)
         const MY_MERCHANT_ID = "demo_id";
 
-        // Функция переключения тарифов и пересчета цен
         function changeTariff(name, price, oldPrice, discount) {
             activeTariffName = name;
             activePrice = price;
 
-            // Выставляем активный класс на кнопку
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
 
-            // Обновляем текст заголовка
-            document.getElementById('payTitle').innerText = "Покупка «Клиент 1.21.4 " + (name === 'Навсегда' ? 'Навсегда' : 'на ' + name) + "»";
+            if (name === 'Навсегда') {
+                document.getElementById('payTitle').innerText = "Покупка «Клиент 1.21.4 Навсегда»";
+            } else {
+                document.getElementById('payTitle').innerText = "Покупка «Клиент 1.21.4 на " + name + "»";
+            }
 
-            // Перерисовываем блок цены с учетом скидок
             const display = document.getElementById('priceDisplay');
             if (discount > 0) {
                 display.innerHTML = 'К оплатe: <span class="old-price-strike">' + oldPrice + ' ₽</span><span class="price-amount">' + price + ' ₽</span><span class="discount-badge">Скидка ' + discount + '%</span>';
@@ -218,19 +203,30 @@
             }
         }
 
-        // Логика перехода на платежную систему
         function executePayment() {
             alert("Перенаправляем на защищенный шлюз кассы для оплаты тарифа: " + activeTariffName);
             
-            // Записываем лицензию в память для личного кабинета (эмуляция успешной покупки)
             localStorage.setItem('hasLicense', 'true');
+            localStorage.setItem('licenseType', activeTariffName);
 
-            // Генерируем случайный номер заказа
+            // Записываем точное время окончания подписки в миллисекундах
+            const now = new Date();
+            let expirationTime = 0;
+
+            if (activeTariffName === "30 дней") {
+                expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000); // +30 дней
+            } else if (activeTariffName === "90 дней") {
+                expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000); // +90 дней
+            } else if (activeTariffName === "Навсегда") {
+                expirationTime = 0; // Бесконечно
+            }
+
+            localStorage.setItem('licenseExpiration', expirationTime);
+
             const randomId = Math.floor(Math.random() * 900000) + 100000;
             const orderId = "sub_" + randomId;
             const description = "GavrikClient License: " + activeTariffName;
 
-            // Формируем ссылку на платежную систему Aaio
             const paymentUrl = "https://aaio.io" 
                 + "?merchant_id=" + encodeURIComponent(MY_MERCHANT_ID)
                 + "&amount=" + encodeURIComponent(activePrice)
@@ -238,7 +234,6 @@
                 + "&currency=RUB"
                 + "&desc=" + encodeURIComponent(description);
             
-            // Переводим пользователя в личный кабинет после вызова платежки
             window.location.href = 'profile.html';
         }
     </script>
