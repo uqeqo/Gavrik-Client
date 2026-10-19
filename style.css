@@ -17,15 +17,20 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Шапка сайта */
 header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px 5%;
     background: rgba(10, 12, 10, 0.6);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 255, 0, 0.15);
+    position: relative;
+    z-index: 1000;
 }
 
 .logo {
@@ -40,7 +45,83 @@ header {
     text-shadow: 0 0 12px #00ff00;
 }
 
-/* Контейнер по центру экрана */
+/* Зеленая неоновая плашка версии 1.21.4 по вашему запросу */
+.version-tag {
+    background: #000;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-left: 10px;
+    vertical-align: middle;
+    font-family: monospace;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+}
+
+/* Кнопка три полоски (Бургер-меню) */
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+.menu-toggle div {
+    width: 100%;
+    height: 3px;
+    background-color: #00ff00;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* Выпадающее адаптивное меню */
+.dropdown-menu {
+    position: absolute;
+    top: 70px;
+    right: 5%;
+    background: rgba(12, 16, 12, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    border-radius: 12px;
+    width: 220px;
+    padding: 15px 0;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown-menu.active {
+    display: flex;
+}
+
+.dropdown-menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+    padding-left: 25px;
+}
+
+.nav-auth-btn {
+    border-top: 1px solid #222;
+    margin-top: 5px;
+    color: #00ff00 !important;
+}
+
+/* Главный экран и сетка */
 .main-container {
     display: flex;
     flex: 1;
@@ -55,7 +136,50 @@ header {
     padding: 20px;
 }
 
-/* Блок в темно-зеленом стиле с эффектом матового стекла */
+/* Секция описания "О нас" в стиле Celestial */
+.hero-section {
+    text-align: left;
+    justify-content: flex-start;
+    padding-left: 10%;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 16px;
+    color: #a0b0a0;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+/* Красивый бейдж оптимизации */
+.badge-opt {
+    display: inline-block;
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* Блок матового стекла для форм и ЛК */
 .box {
     background: rgba(12, 18, 12, 0.65);
     backdrop-filter: blur(15px);
@@ -69,32 +193,21 @@ header {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
-.box h2 {
-    font-size: 26px;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
-}
-
-.box p {
-    color: #a0b0a0;
-    font-size: 15px;
-    margin-bottom: 35px;
-    line-height: 1.6;
-}
-
 /* Общие стили для кнопок */
 .btn {
-    width: 100%;
-    padding: 16px;
+    padding: 16px 30px;
     border: none;
     border-radius: 10px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Кнопка Купить лаунчер */
+/* Кнопка Купить */
 .btn-buy {
     background: #00ff00;
     color: #000000;
@@ -104,11 +217,38 @@ header {
 .btn-buy:hover {
     transform: translateY(-3px);
     background: #33ff33;
-    box-shadow: 0 0 25px #00ff00; /* Зеленое свечение */
+    box-shadow: 0 0 25px #00ff00;
 }
 
-/* Мобильная адаптация */
+/* Вторичная кнопка (Подробнее) */
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Адаптивность для телефонов */
 @media (max-width: 768px) {
-    body { overflow-y: auto; height: auto; }
-    header { text-align: center; }
+    body {
+        overflow-y: auto;
+        height: auto;
+    }
+    .hero-section {
+        padding-left: 5%;
+        padding-right: 5%;
+        text-align: center;
+        justify-content: center;
+        margin-top: 40px;
+    }
+    .hero-buttons {
+        flex-direction: column;
+    }
+    .hero-content h1 {
+        font-size: 36px;
+    }
 }
