@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация — ГАВРИК CLIENT</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-box { background: rgba(12, 18, 12, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 0, 0.2); border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; margin: 100px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .auth-box h2 { margin-bottom: 25px; font-size: 24px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; color: #a0b0a0; margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 14px; background: #000; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 15px; transition: 0.2s; }
+        .input-group input:focus { border-color: #00ff00; outline: none; box-shadow: 0 0 10px rgba(0,255,0,0.2); }
+        .auth-btn { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .auth-btn:hover { background: #33ff33; box-shadow: 0 0 20px #00ff00; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ГАВРИК<span>CLIENT</span></div>
+    </header>
+
+    <div class="auth-box">
+        <h2>Вход в аккаунт</h2>
+        <form onsubmit="loginUser(event)">
+            <div class="input-group">
+                <label>Логин или E-mail</label>
+                <input type="text" id="username" required placeholder="Введите ваш логин">
+            </div>
+            <div class="input-group">
+                <label>Пароль</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn auth-btn">Войти в панель</button>
+        </form>
+    </div>
+
+    <script>
+        function loginUser(event) {
+            event.preventDefault();
+            const user = document.getElementById('username').value;
+            // Имитируем успешный вход и сохраняем данные в браузер
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('username', user);
+            localStorage.setItem('uid', Math.floor(Math.random() * 90000) + 200000);
+            localStorage.setItem('regDate', '19.10.2026 14:56');
+            localStorage.setItem('hwid', 'd7b6cbde6a9f95405e00b402' + Math.floor(Math.random()*1000));
+            
+            alert('Авторизация успешна! Переходим в личный кабинет.');
+            window.location.href = 'profile.html';
+        }
+    </script>
+</body>
+</html>
