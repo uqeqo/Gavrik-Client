@@ -6,14 +6,19 @@
     <title>Авторизация — ГАВРИК CLIENT</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .auth-box { background: rgba(12, 18, 12, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 0, 0.2); border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; margin: 100px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .auth-box h2 { margin-bottom: 25px; font-size: 24px; }
-        .input-group { margin-bottom: 20px; text-align: left; }
+        .auth-box { background: rgba(12, 18, 12, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 0, 0.2); border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; margin: 80px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .auth-box h2 { margin-bottom: 20px; font-size: 24px; }
+        .auth-tabs { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .auth-tab { flex: 1; background: transparent; border: none; color: #a0b0a0; padding: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.2s; }
+        .auth-tab.active { background: #00ff00; color: #000; box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); }
+        .input-group { margin-bottom: 18px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #a0b0a0; margin-bottom: 5px; }
         .input-group input { width: 100%; padding: 14px; background: #000; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 15px; transition: 0.2s; }
         .input-group input:focus { border-color: #00ff00; outline: none; box-shadow: 0 0 10px rgba(0,255,0,0.2); }
         .auth-btn { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .auth-btn:hover { background: #33ff33; box-shadow: 0 0 20px #00ff00; }
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
     </style>
 </head>
 <body>
@@ -23,33 +28,125 @@
     </header>
 
     <div class="auth-box">
-        <h2>Вход в аккаунт</h2>
-        <form onsubmit="loginUser(event)">
-            <div class="input-group">
-                <label>Логин или E-mail</label>
-                <input type="text" id="username" required placeholder="Введите ваш логин">
-            </div>
-            <div class="input-group">
-                <label>Пароль</label>
-                <input type="password" id="password" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn auth-btn">Войти в панель</button>
-        </form>
+        <!-- Переключатель Вход / Регистрация -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchTab('login')">Вход</button>
+            <button class="auth-tab" onclick="switchTab('register')">Регистрация</button>
+        </div>
+
+        <!-- ФОРМА ВХОДА -->
+        <div id="loginPanel" class="form-panel active">
+            <h2>Авторизация</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label>Логин</label>
+                    <input type="text" id="loginUser" required placeholder="Введите ваш логин">
+                </div>
+                <div class="input-group">
+                    <label>Пароль</label>
+                    <input type="password" id="loginPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn auth-btn">Войти</button>
+            </form>
+        </div>
+
+        <!-- ФОРМА РЕГИСТРАЦИИ -->
+        <div id="registerPanel" class="form-panel">
+            <h2>Создать аккаунт</h2>
+            <form onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>Придумайте логин</label>
+                    <input type="text" id="regUser" required placeholder="Например: GavrikPlayer">
+                </div>
+                <div class="input-group">
+                    <label>Придумайте пароль</label>
+                    <input type="password" id="regPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn auth-btn" style="background:#00aa00; color:#fff;">Зарегистрироваться</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        function loginUser(event) {
-            event.preventDefault();
-            const user = document.getElementById('username').value;
-            // Имитируем успешный вход и сохраняем данные в браузер
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('username', user);
-            localStorage.setItem('uid', Math.floor(Math.random() * 90000) + 200000);
-            localStorage.setItem('regDate', '19.10.2026 14:56');
-            localStorage.setItem('hwid', 'd7b6cbde6a9f95405e00b402' + Math.floor(Math.random()*1000));
+        // Переключение между вкладками
+        function switchTab(type) {
+            document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
             
-            alert('Авторизация успешна! Переходим в личный кабинет.');
-            window.location.href = 'profile.html';
+            if (type === 'login') {
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                document.getElementById('loginPanel').classList.add('active');
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('registerPanel').classList.add('active');
+            }
+        }
+
+        // Логика точной регистрации
+        function handleRegister(event) {
+            event.preventDefault();
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value;
+
+            if (user.length < 3) {
+                alert('Логин должен быть не менее 3 символов!');
+                return;
+            }
+
+            // Проверяем, существует ли уже такой пользователь в локальной базе
+            if (localStorage.getItem('user_db_' + user)) {
+                alert('Пользователь с таким логином уже зарегистрирован!');
+                return;
+            }
+
+            // Сохраняем пароль для этого пользователя
+            localStorage.setItem('user_db_' + user, pass);
+            
+            // Генерируем уникальные персональные данные для ЛК
+            const userData = {
+                uid: Math.floor(Math.random() * 90000) + 200000,
+                regDate: new Date().toLocaleString(),
+                hwid: 'd7b6cbde6a9f' + Math.floor(Math.random() * 1000000000000)
+            };
+            localStorage.setItem('user_data_' + user, JSON.stringify(userData));
+
+            alert('Регистрация успешна! Теперь вы можете войти в систему.');
+            switchTab('login');
+            document.getElementById('loginUser').value = user;
+        }
+
+        // Логика точного входа (с проверкой сохраненного пароля)
+        function handleLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            // Ищем сохраненный пароль в нашей базе
+            const savedPassword = localStorage.getItem('user_db_' + user);
+
+            if (!savedPassword) {
+                alert('Пользователь с таким логином не найден!');
+                return;
+            }
+
+            // Точная проверка совпадения пароля
+            if (savedPassword === pass) {
+                // Извлекаем сгенерированные при регистрации UID и HWID
+                const rawData = localStorage.getItem('user_data_' + user);
+                const data = JSON.parse(rawData);
+
+                // Записываем активную сессию в браузер
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', user);
+                localStorage.setItem('uid', data.uid);
+                localStorage.setItem('regDate', data.regDate);
+                localStorage.setItem('hwid', data.hwid);
+
+                alert('Авторизация успешна! Добро пожаловать.');
+                window.location.href = 'profile.html';
+            } else {
+                alert('Неверный пароль! Повторите попытку.');
+            }
         }
     </script>
 </body>
