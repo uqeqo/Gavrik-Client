@@ -35,12 +35,12 @@
 
         <div class="lk-row">
             <div class="lk-label">🆔 UID</div>
-            <div class="lk-value" id="lkUID">205264</div>
+            <div class="lk-value" id="lkUID">------</div>
         </div>
 
         <div class="lk-row">
             <div class="lk-label">👤 Логин</div>
-            <div class="lk-value" id="lkLogin">Uqeqo</div>
+            <div class="lk-value" id="lkLogin">------</div>
         </div>
 
         <div class="lk-row">
@@ -50,13 +50,13 @@
 
         <div class="lk-row">
             <div class="lk-label">📅 Дата регистрации</div>
-            <div class="lk-value" id="lkRegDate">19.10.2026 14:56</div>
+            <div class="lk-value" id="lkRegDate">------</div>
         </div>
 
         <div class="lk-row">
             <div class="lk-label">🖥️ HWID</div>
             <div class="lk-value">
-                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">d7b6cbde6a9f95405e00b402...</span>
+                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">------------------</span>
                 <button class="lk-btn" onclick="alert('Запрос на сброс HWID отправлен модерации!')">🔒 Сбросить</button>
             </div>
         </div>
@@ -87,7 +87,6 @@
     </div>
 
     <script>
-        // База текстовых лицензионных ключей
         const keyDatabase = {
             "GAVRIK-30D-8F2A-9D4C-E71B": "30 дней",
             "GAVRIK-30D-5B9E-1C4F-A38D": "30 дней",
@@ -106,24 +105,23 @@
             document.getElementById('lkRegDate').innerText = localStorage.getItem('regDate');
             document.getElementById('lkHWID').innerText = localStorage.getItem('hwid').substring(0, 18) + '...';
             
-            // Вызываем умную ежесекундную проверку оставшегося времени
             checkSubscriptionExpiration();
         };
 
-        // Логика проверки и автоматического сброса подписки по времени
         function checkSubscriptionExpiration() {
-            const hasLicense = localStorage.getItem('hasLicense');
-            const expiration = localStorage.getItem('licenseExpiration');
+            // Привязываем лицензию к конкретному текущему пользователю
+            const currentUser = localStorage.getItem('username');
+            const hasLicense = localStorage.getItem('hasLicense_' + currentUser);
+            const expiration = localStorage.getItem('licenseExpiration_' + currentUser);
 
             if (hasLicense === 'true') {
                 const now = new Date().getTime();
                 const expTime = parseInt(expiration);
 
-                // Если время вышло (и это не бесконечная подписка), сбрасываем всё
                 if (expTime !== 0 && now > expTime) {
-                    localStorage.removeItem('hasLicense');
-                    localStorage.removeItem('licenseType');
-                    localStorage.removeItem('licenseExpiration');
+                    localStorage.removeItem('hasLicense_' + currentUser);
+                    localStorage.removeItem('licenseType_' + currentUser);
+                    localStorage.removeItem('licenseExpiration_' + currentUser);
                     
                     document.getElementById('lkStatus').innerText = 'Доступ отсутствует';
                     document.getElementById('lkTimeLeft').innerText = 'Срок действия вашей подписки истёк!';
@@ -131,8 +129,7 @@
                     document.getElementById('infoProductBtn').style.display = 'none';
                     alert('Время действия лицензии закончилось. Подписка автоматически аннулирована.');
                 } else {
-                    // Подписка активна — выводим данные на экран
-                    const type = localStorage.getItem('licenseType') || "Активна";
+                    const type = localStorage.getItem('licenseType_' + currentUser) || "Активна";
                     document.getElementById('lkStatus').innerText = 'Лицензия ГАВРИК CLIENT (' + type + ')';
                     document.getElementById('infoProductBtn').style.display = 'block';
 
@@ -148,10 +145,11 @@
             }
         }
 
-        // Логика активации ключа с автоматическим расчётом дедлайна
         function activateKey() {
             const enteredKey = prompt('Введите ваш лицензионный ключ активации:');
             if (!enteredKey) return;
+
+            const currentUser = localStorage.getItem('username');
 
             if (keyDatabase[enteredKey]) {
                 const duration = keyDatabase[enteredKey];
@@ -159,33 +157,31 @@
                 let expirationTime = 0;
 
                 if (duration === "30 дней") {
-                    expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000); // 30 дней в мс
+                    expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
                 } else if (duration === "90 дней") {
-                    expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000); // 90 дней в мс
+                    expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
                 } else if (duration === "Навсегда") {
-                    expirationTime = 0; // Бесконечно
+                    expirationTime = 0;
                 }
 
-                localStorage.setItem('hasLicense', 'true');
-                localStorage.setItem('licenseType', duration);
-                localStorage.setItem('licenseExpiration', expirationTime);
+                // Привязываем статус лицензии строго к текущему вошедшему пользователю
+                localStorage.setItem('hasLicense_' + currentUser, 'true');
+                localStorage.setItem('licenseType_' + currentUser, duration);
+                localStorage.setItem('licenseExpiration_' + currentUser, expirationTime);
 
                 alert('🎉 Ключ успешно активирован! Добавлена подписка: ' + duration);
                 location.reload();
             } else {
-                alert('❌ Ошибка: Введён неверный или уже использованный ключ активации!');
+                // Точный вывод ошибки по вашему запросу
+                alert('Неверный ключ доступа');
             }
         }
 
         function showProductModal() {
-            const type = localStorage.getItem('licenseType') || "30 дней";
+            const currentUser = localStorage.getItem('username');
+            const type = localStorage.getItem('licenseType_' + currentUser) || "30 дней";
             alert('Купленные товары:\n• Лицензия ГАВРИК CLIENT\n• Доступ: ' + type + '\n• Обновления: Включены');
         }
 
         function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-    </script>
-</body>
-</html>
+            // Удаляем только статус текущей сессии входа, не ломая базу зарегистрированных юзеров
