@@ -35,12 +35,12 @@
 
         <div class="lk-row">
             <div class="lk-label">🆔 UID</div>
-            <div class="lk-value" id="lkUID">Загрузка...</div>
+            <div class="lk-value" id="lkUID">------</div>
         </div>
 
         <div class="lk-row">
             <div class="lk-label">👤 Логин</div>
-            <div class="lk-value" id="lkLogin">Загрузка...</div>
+            <div class="lk-value" id="lkLogin">------</div>
         </div>
 
         <div class="lk-row">
@@ -50,13 +50,13 @@
 
         <div class="lk-row">
             <div class="lk-label">📅 Дата регистрации</div>
-            <div class="lk-value" id="lkRegDate">Загрузка...</div>
+            <div class="lk-value" id="lkRegDate">------</div>
         </div>
 
         <div class="lk-row">
             <div class="lk-label">🖥️ HWID</div>
             <div class="lk-value">
-                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">Загрузка...</span>
+                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">------------------</span>
                 <button class="lk-btn" onclick="alert('Запрос на сброс HWID отправлен модерации!')">🔒 Сбросить</button>
             </div>
         </div>
@@ -79,7 +79,6 @@
             <button class="btn-action-lk btn-red" onclick="logout()">❌ Выйти из аккаунта</button>
         </div>
 
-        <!-- Обновлена почта поддержки в футере [image_DSKzbu.png] -->
         <div class="footer-lk">
             <p><strong>GAVRIK CLIENT — 1.21.4</strong></p>
             <p style="margin: 5px 0 15px;">Почта для связи: m6296778@gmail.com (ПН-ПТ 10:00-18:00 МСК)</p>
@@ -88,8 +87,6 @@
     </div>
 
     <script>
-        const DB_URL = "https://kvdb.io_";
-        
         const keyDatabase = {
             "GAVRIK-30D-8F2A-9D4C-E71B": "30 дней",
             "GAVRIK-30D-5B9E-1C4F-A38D": "30 дней",
@@ -98,47 +95,42 @@
             "GAVRIK-INF-55DD-EE44-FF11": "Навсегда"
         };
 
-        let cachedUserData = null;
+        let user = localStorage.getItem('username');
+        let userList = JSON.parse(localStorage.getItem('cloud_user_db') || '{}');
+        let userData = userList[user] || null;
 
-        window.onload = async function() {
-            const user = localStorage.getItem('username');
-            if (localStorage.getItem('isLoggedIn') !== 'true' || !user) {
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') !== 'true' || !user || !userData) {
                 window.location.href = 'auth.html';
                 return;
             }
 
-            try {
-                const response = await fetch(DB_URL + user);
-                cachedUserData = await response.json();
-
-                document.getElementById('lkUID').innerText = cachedUserData.uid;
-                document.getElementById('lkLogin').innerText = user.toUpperCase();
-                document.getElementById('lkRegDate').innerText = cachedUserData.regDate;
-                document.getElementById('lkHWID').innerText = cachedUserData.hwid;
-                
-                checkSubscription(user);
-            } catch (err) {
-                alert('Ошибка соединения с облачной базой данных!');
-            }
+            document.getElementById('lkUID').innerText = userData.uid;
+            document.getElementById('lkLogin').innerText = user.toUpperCase();
+            document.getElementById('lkRegDate').innerText = userData.regDate;
+            document.getElementById('lkHWID').innerText = userData.hwid.substring(0, 18) + '...';
+            
+            checkSubscriptionExpiration();
         };
 
-        async function checkSubscription(user) {
-            const now = new Date().getTime();
-            const expTime = parseInt(cachedUserData.licenseExpiration);
+        function checkSubscriptionExpiration() {
+            if (userData.hasLicense === 'true') {
+                const now = new Date().getTime();
+                const expTime = parseInt(userData.licenseExpiration);
 
-            if (cachedUserData.hasLicense === 'true') {
                 if (expTime !== 0 && now > expTime) {
-                    cachedUserData.hasLicense = 'false';
-                    cachedUserData.licenseType = '';
-                    cachedUserData.licenseExpiration = 0;
-                    
-                    await fetch(DB_URL + user, { method: 'POST', body: JSON.stringify(cachedUserData) });
+                    userData.hasLicense = 'false';
+                    userData.licenseType = '';
+                    userData.licenseExpiration = 0;
+                    userList[user] = userData;
+                    localStorage.setItem('cloud_user_db', JSON.stringify(userList));
                     
                     document.getElementById('lkStatus').innerText = 'Доступ отсутствует';
                     document.getElementById('lkTimeLeft').innerText = 'Срок действия вашей подписки истёк!';
                     document.getElementById('lkTimeLeft').style.color = '#ff3333';
+                    document.getElementById('infoProductBtn').style.display = 'none';
                 } else {
-                    document.getElementById('lkStatus').innerText = 'Лицензия ГАВРИК CLIENT (' + cachedUserData.licenseType + ')';
+                    document.getElementById('lkStatus').innerText = 'Лицензия ГАВРИК CLIENT (' + userData.licenseType + ')';
                     document.getElementById('infoProductBtn').style.display = 'block';
 
                     if (expTime === 0) {
@@ -152,7 +144,7 @@
             }
         }
 
-        async function activateKey() {
+        function activateKey() {
             const enteredKey = prompt('Введите ваш лицензионный ключ активации:');
             if (!enteredKey) return;
 
@@ -163,14 +155,13 @@
 
                 if (duration === "30 дней") expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
                 else if (duration === "90 дней") expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
-                else if (duration === "Навсегда") expirationTime = 0;
-
-                cachedUserData.hasLicense = 'true';
-                cachedUserData.licenseType = duration;
-                cachedUserData.licenseExpiration = expirationTime;
-
-                const user = localStorage.getItem('username');
-                await fetch(DB_URL + user, { method: 'POST', body: JSON.stringify(cachedUserData) });
+                
+                userData.hasLicense = 'true';
+                userData.licenseType = duration;
+                userData.licenseExpiration = expirationTime;
+                
+                userList[user] = userData;
+                localStorage.setItem('cloud_user_db', JSON.stringify(userList));
 
                 alert('🎉 Ключ успешно активирован! Добавлена подписка: ' + duration);
                 location.reload();
@@ -180,11 +171,12 @@
         }
 
         function showProductModal() {
-            alert('Купленные товары:\n• Лицензия ГАВРИК CLIENT\n• Доступ: ' + cachedUserData.licenseType);
+            alert('Купленные товары:\n• Лицензия ГАВРИК CLIENT\n• Доступ: ' + userData.licenseType);
         }
 
         function logout() {
-            localStorage.clear();
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
             window.location.href = 'index.html';
         }
     </script>
