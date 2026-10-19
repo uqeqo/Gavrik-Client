@@ -3,84 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор подписки — ГАВРИК CLIENT</title>
+    <title>Покупка подписки — ГАВРИК CLIENT</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Стили для страницы подписок */
-        .grid-subs { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 15px; 
-            width: 100%; 
-            max-width: 1100px; 
-            margin: 20px auto; 
-            padding: 0 20px; 
+        /* Специфичные стили для страницы оплаты в стиле Celestial */
+        .pay-container {
+            max-width: 500px;
+            width: 90%;
+            margin: 60px auto;
+            background: rgba(12, 18, 12, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 0, 0.15);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
-        .sub-card { 
-            background: rgba(12, 18, 12, 0.7); 
-            backdrop-filter: blur(15px); 
-            border: 1px solid rgba(0, 255, 0, 0.15); 
-            border-radius: 12px; 
-            padding: 25px 15px; 
-            text-align: center; 
-            transition: 0.3s; 
-            cursor: pointer; 
+
+        .pay-container h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.4;
         }
-        .sub-card:hover, .sub-card.active { 
-            border-color: #00ff00; 
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); 
-            transform: translateY(-3px); 
+
+        /* Переключатель тарифов (табы) */
+        .tab-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .sub-card h3 { 
-            font-size: 20px; 
-            margin-bottom: 10px; 
-            color: #fff; 
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #a0b0a0;
+            padding: 12px 5px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.2s;
         }
-        .sub-price { 
-            font-size: 24px; 
-            color: #00ff00; 
-            font-weight: 800; 
-            margin-bottom: 5px; 
+
+        .tab-btn.active {
+            background: #00ff00;
+            color: #000000;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
         }
-        .payment-box { 
-            background: rgba(12, 18, 12, 0.8); 
-            border: 1px solid rgba(0, 255, 0, 0.2); 
-            border-radius: 16px; 
-            max-width: 500px; 
-            width: 90%; 
-            margin: 30px auto; 
-            padding: 30px; 
-            text-align: center; 
+
+        /* Вывод цены и скидок */
+        .price-display {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-weight: 500;
         }
-        .methods { 
-            display: flex; 
-            justify-content: space-around; 
-            margin: 20px 0; 
+
+        .price-amount {
+            font-size: 28px;
+            font-weight: 800;
+            color: #00ff00;
+            margin: 0 6px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
         }
-        .method-btn { 
-            background: #000; 
-            border: 1px solid #333; 
-            color: #fff; 
-            padding: 10px 20px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.2s; 
+
+        .old-price-strike {
+            font-size: 18px;
+            text-decoration: line-through;
+            color: #556655;
+            margin-right: 5px;
         }
-        .method-btn:hover, .method-btn.selected { 
-            border-color: #00ff00; 
-            color: #00ff00; 
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); 
+
+        .discount-badge {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-left: 5px;
+            vertical-align: middle;
         }
-        .back-link { 
-            display: inline-block; 
-            color: #a0b0a0; 
-            text-decoration: none; 
-            margin-top: 15px; 
-            font-size: 14px; 
+
+        /* Поле промокода */
+        .promo-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #223322;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            transition: 0.2s;
         }
-        .back-link:hover { 
-            color: #00ff00; 
+
+        .promo-input:focus {
+            border-color: #00ff00;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.15);
+        }
+
+        /* Кнопка сторонней оплаты (FunPay) */
+        .btn-funpay {
+            background: #ffffff;
+            color: #000000;
+            margin-top: 12px;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-funpay span {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-funpay span font {
+            color: #0055ff;
+        }
+
+        .btn-funpay:hover {
+            background: #eeeeee;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: #a0b0a0;
+            border: 1px solid #223322;
+            margin-top: 20px;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .btn-cancel:hover {
+            color: #ff3333;
+            border-color: #ff3333;
         }
     </style>
 </head>
@@ -90,89 +158,88 @@
         <div class="logo">ГАВРИК<span>CLIENT</span></div>
     </header>
 
-    <h2 style="text-align: center; margin-top: 40px; font-size: 28px;">Выберите тарифный план</h2>
+    <div class="pay-container">
+        <!-- Динамический заголовок подписки -->
+        <h2 id="payTitle">Покупка «Клиент 1.21.4 на 30 дней»</h2>
 
-    <div class="grid-subs">
-        <div class="sub-card" onclick="selectSub('7 дней', '99₽')">
-            <h3>7 Дней</h3>
-            <div class="sub-price">99₽</div>
+        <!-- Переключатель периодов (Табы) -->
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="changeTariff('30 дней', 299, 0, 0)">30 дней</button>
+            <button class="tab-btn" onclick="changeTariff('90 дней', 499, 554, 10)">90 дней</button>
+            <button class="tab-btn" onclick="changeTariff('Навсегда', 699, 932, 25)">Навсегда</button>
         </div>
-        <div class="sub-card active" onclick="selectSub('30 дней', '299₽')">
-            <h3>30 Дней</h3>
-            <div class="sub-price">299₽</div>
-        </div>
-        <div class="sub-card" onclick="selectSub('90 дней', '699₽')">
-            <h3>90 Дней</h3>
-            <div class="sub-price">699₽</div>
-        </div>
-        <div class="sub-card" onclick="selectSub('180 дней', '1199₽')">
-            <h3>180 Дней</h3>
-            <div class="sub-price">1199₽</div>
-        </div>
-        <div class="sub-card" onclick="selectSub('Lifetime (Навсегда)', '2499₽')">
-            <h3>Lifetime</h3>
-            <div class="sub-price">2499₽</div>
-        </div>
-    </div>
 
-    <div class="payment-box">
-        <h3 id="selectedInfo">Выбрано: 30 дней (299₽)</h3>
-        <p style="color: #a0b0a0; font-size: 14px; margin-top: 5px;">Выберите удобный способ оплаты:</p>
+        <!-- Блок вывода итоговой стоимости -->
+        <div class="price-display" id="priceDisplay">
+            К оплатe:<span class="price-amount">299 ₽</span>
+        </div>
+
+        <!-- Поле для ввода промокода -->
+        <input type="text" class="promo-input" placeholder="Введите промокод (не обязательно)">
+
+        <!-- Основная кнопка оплаты -->
+        <button class="btn btn-buy" onclick="executePayment()">➔ Продолжить к оплате</button>
         
-        <div class="methods">
-            <button class="method-btn selected" onclick="selectMethod(this)">Банковская карта / СБП</button>
-            <button class="method-btn" onclick="selectMethod(this)">Электронные кошельки</button>
-        </div>
+        <!-- Дополнительный метод через FunPay -->
+        <button class="btn btn-funpay" onclick="alert('Перенаправление на продавца FunPay...')">
+            Оплатить через &nbsp; <span>FUN<font>PAY</font></span>
+        </button>
 
-        <button class="btn btn-buy" onclick="startSubscriptionPayment()">Перейти к оплате</button>
-        <br>
-        <a href="index.html" class="back-link">← Вернуться назад</a>
+        <!-- Кнопка возврата -->
+        <button class="btn btn-cancel" onclick="window.location.href='profile.html'">✕ Отмена</button>
     </div>
 
     <script>
-        // Переменные для хранения текущего выбора (по умолчанию 30 дней за 299₽)
-        let currentPrice = 299;
-        let currentTariff = "30 дней";
+        // Глобальные переменные для хранения выбранного тарифа
+        let activeTariffName = "30 дней";
+        let activePrice = 299;
 
-        // Поменяйте значение ниже на ваш настоящий ID магазина из личного кабинета Aaio после регистрации!
-        // Пока вы его не поменяли, ссылка будет открывать демонстрационную форму кассы.
-        const MY_MERCHANT_ID = "demo_id"; 
+        // ID вашего магазина Aaio (демо-значение)
+        const MY_MERCHANT_ID = "demo_id";
 
-        function selectSub(time, price) {
-            document.getElementById('selectedInfo').innerText = "Выбрано: " + time + " (" + price + ")";
-            currentPrice = parseInt(price); 
-            currentTariff = time;
+        // Функция переключения тарифов и пересчета цен
+        function changeTariff(name, price, oldPrice, discount) {
+            activeTariffName = name;
+            activePrice = price;
 
-            document.querySelectorAll('.sub-card').forEach(c => c.classList.remove('active'));
+            // Выставляем активный класс на кнопку
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
+
+            // Обновляем текст заголовка
+            document.getElementById('payTitle').innerText = "Покупка «Клиент 1.21.4 " + (name === 'Навсегда' ? 'Навсегда' : 'на ' + name) + "»";
+
+            // Перерисовываем блок цены с учетом скидок
+            const display = document.getElementById('priceDisplay');
+            if (discount > 0) {
+                display.innerHTML = 'К оплатe: <span class="old-price-strike">' + oldPrice + ' ₽</span><span class="price-amount">' + price + ' ₽</span><span class="discount-badge">Скидка ' + discount + '%</span>';
+            } else {
+                display.innerHTML = 'К оплатe:<span class="price-amount">' + price + ' ₽</span>';
+            }
         }
 
-        function selectMethod(element) {
-            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
-            element.classList.add('selected');
-        }
-
-        // Логика перехода на официальный платежный шлюз
-        function startSubscriptionPayment() {
-            alert("Перенаправляем на защищенную страницу оплаты кассы на сумму " + currentPrice + "₽");
+        // Логика перехода на платежную систему
+        function executePayment() {
+            alert("Перенаправляем на защищенный шлюз кассы для оплаты тарифа: " + activeTariffName);
             
-            // Генерируем уникальный номер счета по времени (например: sub_719482)
-            const randomOrderNumber = Math.floor(Math.random() * 900000) + 100000;
-            const orderId = "sub_" + randomOrderNumber;
-            
-            // Создаем понятное описание для чека покупателя
-            const description = "Buy GavrikClient: " + currentTariff;
+            // Записываем лицензию в память для личного кабинета (эмуляция успешной покупки)
+            localStorage.setItem('hasLicense', 'true');
 
-            // Формируем официальную платежную ссылку для перенаправления
+            // Генерируем случайный номер заказа
+            const randomId = Math.floor(Math.random() * 900000) + 100000;
+            const orderId = "sub_" + randomId;
+            const description = "GavrikClient License: " + activeTariffName;
+
+            // Формируем ссылку на платежную систему Aaio
             const paymentUrl = "https://aaio.io" 
                 + "?merchant_id=" + encodeURIComponent(MY_MERCHANT_ID)
-                + "&amount=" + encodeURIComponent(currentPrice)
+                + "&amount=" + encodeURIComponent(activePrice)
                 + "&order_id=" + encodeURIComponent(orderId)
                 + "&currency=RUB"
                 + "&desc=" + encodeURIComponent(description);
             
-            // Переводим браузер на платежную форму кассы
-            window.location.href = paymentUrl;
+            // Переводим пользователя в личный кабинет после вызова платежки
+            window.location.href = 'profile.html';
         }
     </script>
 </body>
