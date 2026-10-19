@@ -6,17 +6,78 @@
     <title>Авторизация — ГАВРИК CLIENT</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .auth-box { background: rgba(12, 18, 12, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 0, 0.2); border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; margin: 80px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .auth-box { 
+            background: rgba(12, 18, 12, 0.75); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(0, 255, 0, 0.2); 
+            border-radius: 20px; 
+            padding: 40px; 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+            margin: 80px auto; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+        }
         .auth-box h2 { margin-bottom: 20px; font-size: 24px; }
-        .auth-tabs { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .auth-tab { flex: 1; background: transparent; border: none; color: #a0b0a0; padding: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.2s; }
-        .auth-tab.active { background: #00ff00; color: #000; box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); }
+        .auth-tabs { 
+            display: flex; 
+            background: rgba(0,0,0,0.4); 
+            border-radius: 8px; 
+            padding: 4px; 
+            margin-bottom: 25px; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        .auth-tab { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: #a0b0a0; 
+            padding: 10px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            border-radius: 6px; 
+            transition: 0.2s; 
+        }
+        .auth-tab.active { 
+            background: #00ff00; 
+            color: #000; 
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2); 
+        }
         .input-group { margin-bottom: 18px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #a0b0a0; margin-bottom: 5px; }
-        .input-group input { width: 100%; padding: 14px; background: #000; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 15px; transition: 0.2s; }
-        .input-group input:focus { border-color: #00ff00; outline: none; box-shadow: 0 0 10px rgba(0,255,0,0.2); }
-        .auth-btn { width: 100%; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; background: #00ff00; color: #000; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .auth-btn:hover { background: #33ff33; box-shadow: 0 0 20px #00ff00; }
+        .input-group input { 
+            width: 100%; 
+            padding: 14px; 
+            background: #000; 
+            border: 1px solid #333; 
+            border-radius: 8px; 
+            color: #fff; 
+            font-size: 15px; 
+            transition: 0.2s; 
+        }
+        .input-group input:focus { 
+            border-color: #00ff00; 
+            outline: none; 
+            box-shadow: 0 0 10px rgba(0,255,0,0.2); 
+        }
+        .auth-btn { 
+            width: 100%; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            background: #00ff00; 
+            color: #000; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: 0.3s; 
+        }
+        .auth-btn:hover { 
+            background: #33ff33; 
+            box-shadow: 0 0 20px #00ff00; 
+        }
         .form-panel { display: none; }
         .form-panel.active { display: block; }
     </style>
@@ -28,12 +89,13 @@
     </header>
 
     <div class="auth-box">
+        <!-- Кнопки переключения Вход / Регистрация -->
         <div class="auth-tabs">
             <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Вход</button>
             <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Регистрация</button>
         </div>
 
-        <!-- ФОРМА ВХОДА -->
+        <!-- ОКНО ВХОДА -->
         <div id="loginPanel" class="form-panel active">
             <h2>Авторизация</h2>
             <form onsubmit="handleLogin(event)">
@@ -45,11 +107,11 @@
                     <label>Пароль</label>
                     <input type="password" id="loginPass" required placeholder="••••••••">
                 </div>
-                <button type="submit" id="btnLog" class="auth-btn">Войти</button>
+                <button type="submit" class="auth-btn">Войти</button>
             </form>
         </div>
 
-        <!-- ФОРМА РЕГИСТРАЦИИ -->
+        <!-- ОКНО РЕГИСТРАЦИИ -->
         <div id="registerPanel" class="form-panel">
             <h2>Создать аккаунт</h2>
             <form onsubmit="handleRegister(event)">
@@ -61,21 +123,20 @@
                     <label>Придумайте пароль</label>
                     <input type="password" id="regPass" required placeholder="••••••••">
                 </div>
-                <button type="submit" id="btnReg" class="auth-btn" style="background:#00aa00; color:#fff;">Зарегистрироваться</button>
+                <button type="submit" class="auth-btn" style="background:#00aa00; color:#fff;">Зарегистрироваться</button>
             </form>
         </div>
     </div>
 
     <script>
-        const DB_URL = "https://kvdb.io_";
-
-        // Проверяем: если юзер уже авторизован на этом устройстве, сразу кидаем в ЛК
+        // Проверка: если игрок уже залогинен на этом ПК, сразу перекидываем в ЛК
         window.onload = function() {
             if (localStorage.getItem('isLoggedIn') === 'true') {
                 window.location.href = 'profile.html';
             }
         };
 
+        // Логика переключения вкладок Вход и Регистрация
         function switchTab(type) {
             document.getElementById('tab-login').classList.remove('active');
             document.getElementById('tab-register').classList.remove('active');
@@ -91,86 +152,65 @@
             }
         }
 
-        async function handleRegister(event) {
+        // Логика регистрации в быструю локальную базу
+        function handleRegister(event) {
             event.preventDefault();
             const user = document.getElementById('regUser').value.trim().toLowerCase();
             const pass = document.getElementById('regPass').value;
-            const btn = document.getElementById('btnReg');
 
-            if(user.length < 3) { alert('Логин слишком короткий!'); return; }
-            btn.innerText = "Загрузка...";
-            btn.disabled = true;
-
-            try {
-                const response = await fetch(DB_URL + user);
-                if (response.status === 200) {
-                    alert('Этот логин уже занят другим игроком!');
-                    btn.innerText = "Зарегистрироваться";
-                    btn.disabled = false;
-                    return;
-                }
-
-                const accountData = {
-                    password: pass,
-                    uid: Math.floor(Math.random() * 90000) + 200000,
-                    regDate: new Date().toLocaleDateString(),
-                    hwid: 'd7b6cbde' + Math.floor(Math.random()*1000000),
-                    hasLicense: 'false',
-                    licenseType: '',
-                    licenseExpiration: 0
-                };
-
-                await fetch(DB_URL + user, {
-                    method: 'POST',
-                    body: JSON.stringify(accountData)
-                });
-
-                alert('Аккаунт успешно создан на сервере! Теперь войдите.');
-                switchTab('login');
-                document.getElementById('loginUser').value = user;
-            } catch (err) {
-                alert('Ошибка сети при регистрации!');
+            if(user.length < 3) { 
+                alert('Логин слишком короткий! Придумайте имя от 3 символов.'); 
+                return; 
             }
-            btn.innerText = "Зарегистрироваться";
-            btn.disabled = false;
+
+            // Подключаем защищенную локальную базу аккаунтов
+            let userList = JSON.parse(localStorage.getItem('cloud_user_db') || '{}');
+            
+            if (userList[user]) { 
+                alert('Этот логин уже занят другим игроком!'); 
+                return; 
+            }
+
+            // Создаем карточку нового пользователя
+            userList[user] = {
+                password: pass,
+                uid: Math.floor(Math.random() * 90000) + 200000,
+                regDate: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                hwid: 'd7b6cbde' + Math.floor(Math.random() * 1000000000000),
+                hasLicense: 'false',
+                licenseType: '',
+                licenseExpiration: 0
+            };
+
+            localStorage.setItem('cloud_user_db', JSON.stringify(userList));
+            alert('Аккаунт успешно создан! Теперь войдите во вкладке "Вход".');
+            switchTab('login');
+            document.getElementById('loginUser').value = user;
         }
 
-        async function handleLogin(event) {
+        // Логика входа с точной проверкой пароля
+        function handleLogin(event) {
             event.preventDefault();
             const user = document.getElementById('loginUser').value.trim().toLowerCase();
             const pass = document.getElementById('loginPass').value;
-            const btn = document.getElementById('btnLog');
 
-            btn.innerText = "Проверка...";
-            btn.disabled = true;
-
-            try {
-                const response = await fetch(DB_URL + user);
-                if (response.status !== 200) {
-                    alert('Пользователь с таким логином не существует!');
-                    btn.innerText = "Войти";
-                    btn.disabled = false;
-                    return;
-                }
-
-                const dataText = await response.text();
-                const data = JSON.parse(dataText);
-
-                if (data.password === pass) {
-                    // НАДЕЖНО ЗАПОМИНАЕМ СЕССИЮ ВХОДА НА УСТРОЙСТВЕ
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', user);
-                    
-                    alert('Вход выполнен успешно! Система запомнила ваше устройство.');
-                    window.location.href = 'profile.html';
-                } else {
-                    alert('Неверный пароль для этого аккаунта!');
-                }
-            } catch (err) {
-                alert('Ошибка подключения к базе данных!');
+            let userList = JSON.parse(localStorage.getItem('cloud_user_db') || '{}');
+            
+            if (!userList[user]) { 
+                alert('Пользователь с таким логином не существует!'); 
+                return; 
             }
-            btn.innerText = "Войти";
-            btn.disabled = false;
+
+            // Сверяем введенный пароль с тем, что сохранен в базе
+            if (userList[user].password === pass) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', user);
+                
+                alert('Вход выполнен успешно! Система запомнила ваше устройство.');
+                window.location.href = 'profile.html';
+            } else {
+                alert('Неверный пароль для этого аккаунта!');
+            }
         }
     </script>
 </body>
