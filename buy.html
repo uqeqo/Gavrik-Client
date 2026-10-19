@@ -22,7 +22,10 @@
         .pay-container h2 { font-size: 22px; font-weight: 600; margin-bottom: 25px; line-height: 1.4; }
         .tab-container { display: flex; background: rgba(0, 0, 0, 0.4); border-radius: 10px; padding: 5px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.05); }
         .tab-btn { flex: 1; background: transparent; border: none; color: #a0b0a0; padding: 12px 5px; font-size: 15px; font-weight: 700; cursor: pointer; border-radius: 8px; transition: 0.2s; }
-        .tab-btn.active { background: #00ff00; color: #000000; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); }
+        
+        /* Исправленный класс для точного отображения зеленой марки */
+        .tab-btn.active { background: #00ff00 !important; color: #000000 !important; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); }
+        
         .price-display { font-size: 16px; color: #ffffff; margin-bottom: 25px; font-weight: 500; }
         .price-amount { font-size: 28px; font-weight: 800; color: #00ff00; margin: 0 6px; text-shadow: 0 0 10px rgba(0, 255, 0, 0.2); }
         .old-price-strike { font-size: 18px; text-decoration: line-through; color: #556655; margin-right: 5px; }
@@ -48,9 +51,9 @@
         <h2 id="payTitle">Покупка «Клиент 1.21.4 на 30 дней»</h2>
 
         <div class="tab-container">
-            <button class="tab-btn active" onclick="changeTariff('30 дней', 299, 0, 0)">30 дней</button>
-            <button class="tab-btn" onclick="changeTariff('90 дней', 499, 554, 10)">90 дней</button>
-            <button class="tab-btn" onclick="changeTariff('Навсегда', 699, 932, 25)">Навсегда</button>
+            <button class="tab-btn active" id="tab30" onclick="changeTariff('30 дней', 299, 0, 0, this)">30 дней</button>
+            <button class="tab-btn" id="tab90" onclick="changeTariff('90 дней', 499, 554, 10, this)">90 дней</button>
+            <button class="tab-btn" id="tabInf" onclick="changeTariff('Навсегда', 699, 932, 25, this)">Навсегда</button>
         </div>
 
         <div class="price-display" id="priceDisplay">
@@ -66,7 +69,8 @@
             Оплатить через &nbsp; <span>FUN<font>PAY</font></span>
         </button>
 
-        <button class="btn btn-cancel" onclick="window.location.href='profile.html'">✕ Отмена</button>
+        <!-- Кнопка отмены теперь возвращает строго на главную без цикличных вылетов -->
+        <button class="btn btn-cancel" onclick="window.location.href='index.html'">✕ Отмена</button>
     </div>
 
     <script>
@@ -85,11 +89,15 @@
             "GAVRIK-20-BOSS": 20, "VIP20": 20, "FOREVER20": 20, "PROMO20": 20, "MYSOF20": 20
         };
 
-        function changeTariff(name, price, oldPrice, discount) {
+        function changeTariff(name, price, oldPrice, discount, element) {
             activeTariffName = name;
             basePrice = price;
             baseOldPrice = oldPrice;
             baseDiscount = discount;
+            
+            // Исправленное точечное переключение зеленой марки у табов
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
             
             if (name === 'Навсегда') {
                 document.getElementById('payTitle').innerText = "Покупка «Клиент 1.21.4 Навсегда»";
@@ -147,28 +155,29 @@
 
             alert("Перенаправляем на защищенный шлюз кассы для оплаты тарифа: " + activeTariffName + " на сумму " + finalPriceToSend + "₽");
             
-            // Сохраняем лицензию на сервере локально
+            // Сохраняем информацию об успешной оплате локально
             const currentUser = localStorage.getItem('username');
-            let userList = JSON.parse(localStorage.getItem('cloud_user_db') || '{}');
-            
-            if (userList[currentUser]) {
-                userList[currentUser].hasLicense = 'true';
-                userList[currentUser].licenseType = activeTariffName;
-                
-                const now = new Date();
-                let expirationTime = 0;
-                if (activeTariffName === "30 дней") expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
-                else if (activeTariffName === "90 дней") expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
-                
-                userList[currentUser].licenseExpiration = expirationTime;
-                localStorage.setItem('cloud_user_db', JSON.stringify(userList));
+            if (currentUser) {
+                let userList = JSON.parse(localStorage.getItem('cloud_user_db') || '{}');
+                if (userList[currentUser]) {
+                    userList[currentUser].hasLicense = 'true';
+                    userList[currentUser].licenseType = activeTariffName;
+                    
+                    const now = new Date();
+                    let expirationTime = 0;
+                    if (activeTariffName === "30 дней") expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
+                    else if (activeTariffName === "90 дней") expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
+                    
+                    userList[currentUser].licenseExpiration = expirationTime;
+                    localStorage.setItem('cloud_user_db', JSON.stringify(userList));
+                }
             }
 
             const randomId = Math.floor(Math.random() * 900000) + 100000;
             const orderId = "sub_" + randomId;
             const description = "GavrikClient License: " + activeTariffName;
 
-            // Ссылка ведет строго на платежный шлюз
+            // Надежный и прямой запуск платежного шлюза
             window.location.href = "https://aaio.io" + MY_MERCHANT_ID + "&amount=" + finalPriceToSend + "&order_id=" + orderId + "&currency=RUB&desc=" + encodeURIComponent(description);
         }
     </script>
