@@ -19,6 +19,8 @@
         .btn-red { background: #990000; grid-column: span 2; }
         .btn-red:hover { background: #cc0000; box-shadow: 0 0 15px #990000; }
         .footer-lk { text-align: center; margin-top: 40px; color: #666; font-size: 13px; border-top: 1px solid #222; padding-top: 20px; }
+        .footer-lk a { color: #a0b0a0; text-decoration: none; margin: 0 10px; }
+        .footer-lk a:hover { color: #00ff00; }
     </style>
 </head>
 <body>
@@ -76,6 +78,13 @@
             <a href="gavrik-client.zip" download class="btn-action-lk btn-purple" style="grid-column: span 2;">📥 Скачать лаунчер (.EXE)</a>
             <button class="btn-action-lk btn-red" onclick="logout()">❌ Выйти из аккаунта</button>
         </div>
+
+        <!-- Обновлена почта поддержки в футере [image_DSKzbu.png] -->
+        <div class="footer-lk">
+            <p><strong>GAVRIK CLIENT — 1.21.4</strong></p>
+            <p style="margin: 5px 0 15px;">Почта для связи: m6296778@gmail.com (ПН-ПТ 10:00-18:00 МСК)</p>
+            <a href="#">Политика конфиденциальности</a> | <a href="#">Пользовательское соглашение</a> | <a href="#">Правила пользования</a>
+        </div>
     </div>
 
     <script>
@@ -93,7 +102,6 @@
 
         window.onload = async function() {
             const user = localStorage.getItem('username');
-            // Если сессия отсутствует, принудительно выгоняем на страницу входа
             if (localStorage.getItem('isLoggedIn') !== 'true' || !user) {
                 window.location.href = 'auth.html';
                 return;
@@ -176,7 +184,6 @@
         }
 
         function logout() {
-            // Очищаем локальную сессию входа на этом девайсе, но сам аккаунт в облаке остается цел
             localStorage.clear();
             window.location.href = 'index.html';
         }
