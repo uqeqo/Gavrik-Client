@@ -19,8 +19,6 @@
         .btn-red { background: #990000; grid-column: span 2; }
         .btn-red:hover { background: #cc0000; box-shadow: 0 0 15px #990000; }
         .footer-lk { text-align: center; margin-top: 40px; color: #666; font-size: 13px; border-top: 1px solid #222; padding-top: 20px; }
-        .footer-lk a { color: #a0b0a0; text-decoration: none; margin: 0 10px; }
-        .footer-lk a:hover { color: #00ff00; }
     </style>
 </head>
 <body>
@@ -35,12 +33,12 @@
 
         <div class="lk-row">
             <div class="lk-label">🆔 UID</div>
-            <div class="lk-value" id="lkUID">------</div>
+            <div class="lk-value" id="lkUID">Загрузка...</div>
         </div>
 
         <div class="lk-row">
             <div class="lk-label">👤 Логин</div>
-            <div class="lk-value" id="lkLogin">------</div>
+            <div class="lk-value" id="lkLogin">Загрузка...</div>
         </div>
 
         <div class="lk-row">
@@ -50,13 +48,13 @@
 
         <div class="lk-row">
             <div class="lk-label">📅 Дата регистрации</div>
-            <div class="lk-value" id="lkRegDate">------</div>
+            <div class="lk-value" id="lkRegDate">Загрузка...</div>
         </div>
 
         <div class="lk-row">
             <div class="lk-label">🖥️ HWID</div>
             <div class="lk-value">
-                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">------------------</span>
+                <span id="lkHWID" style="font-family: monospace; font-size: 13px; color: #a0b0a0;">Загрузка...</span>
                 <button class="lk-btn" onclick="alert('Запрос на сброс HWID отправлен модерации!')">🔒 Сбросить</button>
             </div>
         </div>
@@ -73,20 +71,16 @@
         </div>
 
         <div class="grid-actions">
-            <button class="btn-action-lk btn-purple" onclick="alert('Укажите ваш юзернейм в поддержке для привязки Telegram')">✈️ Привязать Telegram</button>
+            <button class="btn-action-lk btn-purple" onclick="alert('Укажите ваш юзернейм для привязки Telegram')">✈️ Привязать Telegram</button>
             <button class="btn-action-lk btn-purple" onclick="activateKey()">🔑 Активация ключа</button>
             <a href="gavrik-client.zip" download class="btn-action-lk btn-purple" style="grid-column: span 2;">📥 Скачать лаунчер (.EXE)</a>
             <button class="btn-action-lk btn-red" onclick="logout()">❌ Выйти из аккаунта</button>
         </div>
-
-        <div class="footer-lk">
-            <p><strong>GAVRIK CLIENT — 1.21.4</strong></p>
-            <p style="margin: 5px 0 15px;">Почта для связи: ntfhelp@mail.ru (ПН-ПТ 10:00-18:00 МСК)</p>
-            <a href="#">Политика конфиденциальности</a> | <a href="#">Пользовательское соглашение</a> | <a href="#">Правила пользования</a>
-        </div>
     </div>
 
     <script>
+        const DB_URL = "https://kvdb.io_";
+        
         const keyDatabase = {
             "GAVRIK-30D-8F2A-9D4C-E71B": "30 дней",
             "GAVRIK-30D-5B9E-1C4F-A38D": "30 дней",
@@ -95,42 +89,48 @@
             "GAVRIK-INF-55DD-EE44-FF11": "Навсегда"
         };
 
-        window.onload = function() {
-            if (localStorage.getItem('isLoggedIn') !== 'true') {
+        let cachedUserData = null;
+
+        window.onload = async function() {
+            const user = localStorage.getItem('username');
+            // Если сессия отсутствует, принудительно выгоняем на страницу входа
+            if (localStorage.getItem('isLoggedIn') !== 'true' || !user) {
                 window.location.href = 'auth.html';
                 return;
             }
-            document.getElementById('lkUID').innerText = localStorage.getItem('uid');
-            document.getElementById('lkLogin').innerText = localStorage.getItem('username');
-            document.getElementById('lkRegDate').innerText = localStorage.getItem('regDate');
-            document.getElementById('lkHWID').innerText = localStorage.getItem('hwid').substring(0, 18) + '...';
-            
-            checkSubscriptionExpiration();
+
+            try {
+                const response = await fetch(DB_URL + user);
+                cachedUserData = await response.json();
+
+                document.getElementById('lkUID').innerText = cachedUserData.uid;
+                document.getElementById('lkLogin').innerText = user.toUpperCase();
+                document.getElementById('lkRegDate').innerText = cachedUserData.regDate;
+                document.getElementById('lkHWID').innerText = cachedUserData.hwid;
+                
+                checkSubscription(user);
+            } catch (err) {
+                alert('Ошибка соединения с облачной базой данных!');
+            }
         };
 
-        function checkSubscriptionExpiration() {
-            // Привязываем лицензию к конкретному текущему пользователю
-            const currentUser = localStorage.getItem('username');
-            const hasLicense = localStorage.getItem('hasLicense_' + currentUser);
-            const expiration = localStorage.getItem('licenseExpiration_' + currentUser);
+        async function checkSubscription(user) {
+            const now = new Date().getTime();
+            const expTime = parseInt(cachedUserData.licenseExpiration);
 
-            if (hasLicense === 'true') {
-                const now = new Date().getTime();
-                const expTime = parseInt(expiration);
-
+            if (cachedUserData.hasLicense === 'true') {
                 if (expTime !== 0 && now > expTime) {
-                    localStorage.removeItem('hasLicense_' + currentUser);
-                    localStorage.removeItem('licenseType_' + currentUser);
-                    localStorage.removeItem('licenseExpiration_' + currentUser);
+                    cachedUserData.hasLicense = 'false';
+                    cachedUserData.licenseType = '';
+                    cachedUserData.licenseExpiration = 0;
+                    
+                    await fetch(DB_URL + user, { method: 'POST', body: JSON.stringify(cachedUserData) });
                     
                     document.getElementById('lkStatus').innerText = 'Доступ отсутствует';
                     document.getElementById('lkTimeLeft').innerText = 'Срок действия вашей подписки истёк!';
                     document.getElementById('lkTimeLeft').style.color = '#ff3333';
-                    document.getElementById('infoProductBtn').style.display = 'none';
-                    alert('Время действия лицензии закончилось. Подписка автоматически аннулирована.');
                 } else {
-                    const type = localStorage.getItem('licenseType_' + currentUser) || "Активна";
-                    document.getElementById('lkStatus').innerText = 'Лицензия ГАВРИК CLIENT (' + type + ')';
+                    document.getElementById('lkStatus').innerText = 'Лицензия ГАВРИК CLIENT (' + cachedUserData.licenseType + ')';
                     document.getElementById('infoProductBtn').style.display = 'block';
 
                     if (expTime === 0) {
@@ -139,49 +139,47 @@
                     } else {
                         const endDate = new Date(expTime);
                         document.getElementById('lkTimeLeft').innerText = 'Действует до: ' + endDate.toLocaleDateString() + ' ' + endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        document.getElementById('lkTimeLeft').style.color = '#a0b0a0';
                     }
                 }
             }
         }
 
-        function activateKey() {
+        async function activateKey() {
             const enteredKey = prompt('Введите ваш лицензионный ключ активации:');
             if (!enteredKey) return;
-
-            const currentUser = localStorage.getItem('username');
 
             if (keyDatabase[enteredKey]) {
                 const duration = keyDatabase[enteredKey];
                 const now = new Date();
                 let expirationTime = 0;
 
-                if (duration === "30 дней") {
-                    expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
-                } else if (duration === "90 дней") {
-                    expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
-                } else if (duration === "Навсегда") {
-                    expirationTime = 0;
-                }
+                if (duration === "30 дней") expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
+                else if (duration === "90 дней") expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
+                else if (duration === "Навсегда") expirationTime = 0;
 
-                // Привязываем статус лицензии строго к текущему вошедшему пользователю
-                localStorage.setItem('hasLicense_' + currentUser, 'true');
-                localStorage.setItem('licenseType_' + currentUser, duration);
-                localStorage.setItem('licenseExpiration_' + currentUser, expirationTime);
+                cachedUserData.hasLicense = 'true';
+                cachedUserData.licenseType = duration;
+                cachedUserData.licenseExpiration = expirationTime;
+
+                const user = localStorage.getItem('username');
+                await fetch(DB_URL + user, { method: 'POST', body: JSON.stringify(cachedUserData) });
 
                 alert('🎉 Ключ успешно активирован! Добавлена подписка: ' + duration);
                 location.reload();
             } else {
-                // Точный вывод ошибки по вашему запросу
                 alert('Неверный ключ доступа');
             }
         }
 
         function showProductModal() {
-            const currentUser = localStorage.getItem('username');
-            const type = localStorage.getItem('licenseType_' + currentUser) || "30 дней";
-            alert('Купленные товары:\n• Лицензия ГАВРИК CLIENT\n• Доступ: ' + type + '\n• Обновления: Включены');
+            alert('Купленные товары:\n• Лицензия ГАВРИК CLIENT\n• Доступ: ' + cachedUserData.licenseType);
         }
 
         function logout() {
-            // Удаляем только статус текущей сессии входа, не ломая базу зарегистрированных юзеров
+            // Очищаем локальную сессию входа на этом девайсе, но сам аккаунт в облаке остается цел
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
