@@ -31,8 +31,6 @@
         <p class="page-subtitle">Узнай, на что способен наш приватный софт в PvP и выживании</p>
 
         <div class="features-grid">
-            
-            <!-- БЛОК 1: Мощные обходы FunTime -->
             <div class="feature-card">
                 <h3>⚔️ Обходы FunTime & Анархий</h3>
                 <p>Наш софт укомплектован уникальными алгоритмами, которые обходят самые строгие античиты (включая кастомные проверки на серверах FunTime и HolyWorld):</p>
@@ -43,7 +41,6 @@
                 </ul>
             </div>
 
-            <!-- БЛОК 2: Визуалы -->
             <div class="feature-card">
                 <h3>🔮 Передовые Визуалы (Visuals)</h3>
                 <p>Настройте внешний вид игры до мельчайших деталей. Наш HUD разработан под эстетику macOS и имеет плавные неоновые анимации:</p>
@@ -54,23 +51,33 @@
                 </ul>
             </div>
 
-            <!-- БЛОК 3: Вспомогательные функции -->
             <div class="feature-card">
                 <h3>🎒 Автоматизация & Утилиты</h3>
                 <p>Упростите игровой процесс с помощью автоматических функций, реагирующих со скоростью в 0.001 секунды:</p>
                 <ul>
                     <li><strong>AutoTotem / AutoGapple:</strong> Моментально берет тотем бессмертия в руку или ест золотое яблоко при критическом уровне здоровья.</li>
                     <li><strong>Inventory Manager:</strong> Автоматически сортирует броню и ресурсы, выбрасывая мусор во время PvP-замесов.</li>
-                    <li><strong>X-Ray (Поиск руды):</strong> Просвечивает блоки, оставляя видимыми только ценные алмазы, золото и незерит.</li>
+                    <li><strong>X-Ray (Поиск руды):</strong> Просвечивает blocks, оставляя видимыми только ценные алмазы, золото и незерит.</li>
                 </ul>
             </div>
-
         </div>
 
+        <!-- Исправленная кнопка "Начать доминировать" ведет строго на покупку -->
         <div class="back-btn-container">
-            <a href="auth.html" class="btn btn-buy" style="text-decoration: none; padding: 16px 40px;">⚡ Начать доминировать</a>
+            <button onclick="handleLKRedirect()" class="btn btn-buy" style="padding: 16px 40px;">⚡ Начать доминировать</button>
         </div>
     </div>
 
+    <script>
+        function handleLKRedirect() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                window.location.href = 'buy.html'; // Ведет строго на покупку
+            } else {
+                alert('Для покупки софта необходимо зарегистрироваться или войти в аккаунт!');
+                window.location.href = 'auth.html';
+            }
+        }
+    </script>
 </body>
 </html>
