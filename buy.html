@@ -57,7 +57,6 @@
             К оплатe:<span class="price-amount" id="finalPrice">299 ₽</span>
         </div>
 
-        <!-- Поле ввода промокода с автоматической проверкой при вводе буквы -->
         <input type="text" class="promo-input" id="promoCode" oninput="applyPromo()" placeholder="Введите промокод (не обязательно)">
         <span class="promo-status" id="promoStatus" style="color: #666;">Промокод не введен</span>
 
@@ -79,15 +78,10 @@
 
         const MY_MERCHANT_ID = "demo_id";
 
-        // Официальная база из 20 промокодов по вашему запросу
         const promoDatabase = {
-            // Скидки 4%
             "GAVRIK-4-SALE": 4, "DISC4": 4, "CLIENT4": 4, "MINI4": 4, "SLOW4": 4,
-            // Скидки 9%
             "GAVRIK-9-PVP": 9, "OP9": 9, "CHEATER9": 9, "FUN9": 9, "LUCKY9": 9,
-            // Скидки 16%
             "GAVRIK-16-UP": 16, "BOOST16": 16, "MATRIX16": 16, "GERRY16": 16, "BEST16": 16,
-            // Скидки 20%
             "GAVRIK-20-BOSS": 20, "VIP20": 20, "FOREVER20": 20, "PROMO20": 20, "MYSOF20": 20
         };
 
@@ -102,11 +96,9 @@
             } else {
                 document.getElementById('payTitle').innerText = "Покупка «Клиент 1.21.4 на " + name + "»";
             }
-
             renderPrice();
         }
 
-        // Функция применения и расчета промокода
         function applyPromo() {
             const code = document.getElementById('promoCode').value.trim().toUpperCase();
             const statusLabel = document.getElementById('promoStatus');
@@ -128,21 +120,15 @@
                 statusLabel.innerText = "✕ Неверный промокод";
                 statusLabel.style.color = "#ff3333";
             }
-
             renderPrice();
         }
 
-        // Отрисовка цены на экране
         function renderPrice() {
             const display = document.getElementById('priceDisplay');
-            
-            // Считаем итоговую цену с учетом промокода
             let finalPrice = basePrice;
             if (currentDiscountFromPromo > 0) {
                 finalPrice = Math.round(basePrice * (1 - currentDiscountFromPromo / 100));
             }
-
-            // Суммируем скидку тарифа и скидку промокода для красивого значка
             let totalDiscount = baseDiscount + currentDiscountFromPromo;
 
             if (totalDiscount > 0) {
@@ -154,7 +140,6 @@
         }
 
         function executePayment() {
-            // Высчитываем финальную цену для отправки в платежку Aaio
             let finalPriceToSend = basePrice;
             if (currentDiscountFromPromo > 0) {
                 finalPriceToSend = Math.round(basePrice * (1 - currentDiscountFromPromo / 100));
@@ -162,32 +147,29 @@
 
             alert("Перенаправляем на защищенный шлюз кассы для оплаты тарифа: " + activeTariffName + " на сумму " + finalPriceToSend + "₽");
             
-            // Имитируем запись покупки для личного кабинета
+            // Сохраняем лицензию на сервере локально
             const currentUser = localStorage.getItem('username');
-            localStorage.setItem('hasLicense_' + currentUser, 'true');
-            localStorage.setItem('licenseType_' + currentUser, activeTariffName);
+            let userList = JSON.parse(localStorage.getItem('cloud_user_db') || '{}');
             
-            const now = new Date();
-            let expirationTime = 0;
-            if (activeTariffName === "30 дней") expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
-            else if (activeTariffName === "90 дней") expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
-            
-            localStorage.setItem('licenseExpiration_' + currentUser, expirationTime);
+            if (userList[currentUser]) {
+                userList[currentUser].hasLicense = 'true';
+                userList[currentUser].licenseType = activeTariffName;
+                
+                const now = new Date();
+                let expirationTime = 0;
+                if (activeTariffName === "30 дней") expirationTime = now.getTime() + (30 * 24 * 60 * 60 * 1000);
+                else if (activeTariffName === "90 дней") expirationTime = now.getTime() + (90 * 24 * 60 * 60 * 1000);
+                
+                userList[currentUser].licenseExpiration = expirationTime;
+                localStorage.setItem('cloud_user_db', JSON.stringify(userList));
+            }
 
             const randomId = Math.floor(Math.random() * 900000) + 100000;
             const orderId = "sub_" + randomId;
             const description = "GavrikClient License: " + activeTariffName;
 
-            // ФОРМИРУЕМ ПРЯМОЙ ПЕРЕХОД НА КАССУ (Без возврата в ЛК)
-            const paymentUrl = "https://aaio.io" 
-                + "?merchant_id=" + encodeURIComponent(MY_MERCHANT_ID)
-                + "&amount=" + encodeURIComponent(finalPriceToSend)
-                + "&order_id=" + encodeURIComponent(orderId)
-                + "&currency=RUB"
-                + "&desc=" + encodeURIComponent(description);
-            
-            // Совершаем принудительный переход по ссылке кассы наружу
-            window.location.href = paymentUrl;
+            // Ссылка ведет строго на платежный шлюз
+            window.location.href = "https://aaio.io" + MY_MERCHANT_ID + "&amount=" + finalPriceToSend + "&order_id=" + orderId + "&currency=RUB&desc=" + encodeURIComponent(description);
         }
     </script>
 </body>
