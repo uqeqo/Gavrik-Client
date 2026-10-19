@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Функции софта — ГАВРИК CLIENT</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .features-container { max-width: 900px; width: 95%; margin: 40px auto; padding: 0 20px; padding-bottom: 60px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        .feature-card { background: rgba(12, 18, 12, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 0, 0.15); border-radius: 16px; padding: 30px; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.4); transition: 0.3s; }
+        .feature-card:hover { border-color: #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); transform: translateY(-3px); }
+        .feature-card h3 { font-size: 20px; color: #00ff00; margin-bottom: 12px; font-weight: 700; text-shadow: 0 0 8px rgba(0, 255, 0, 0.2); }
+        .feature-card p { color: #a0b0a0; font-size: 14px; line-height: 1.6; }
+        .feature-card ul { margin-top: 10px; padding-left: 18px; color: #d0d5d0; font-size: 13px; line-height: 1.5; }
+        .feature-card ul li { margin-bottom: 6px; }
+        .page-title { text-align: center; margin-top: 40px; font-size: 32px; font-weight: 800; }
+        .page-subtitle { text-align: center; color: #a0b0a0; font-size: 15px; margin-top: 8px; margin-bottom: 10px; }
+        .back-btn-container { text-align: center; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ГАВРИК<span>CLIENT</span></div>
+        <a href="index.html" class="btn btn-secondary" style="padding: 8px 20px; font-size: 13px; text-decoration: none;">← На главную</a>
+    </header>
+
+    <div class="features-container">
+        <h1 class="page-title">Функционал ГАВРИК CLIENT</h1>
+        <p class="page-subtitle">Узнай, на что способен наш приватный софт в PvP и выживании</p>
+
+        <div class="features-grid">
+            
+            <!-- БЛОК 1: Мощные обходы FunTime -->
+            <div class="feature-card">
+                <h3>⚔️ Обходы FunTime & Анархий</h3>
+                <p>Наш софт укомплектован уникальными алгоритмами, которые обходят самые строгие античиты (включая кастомные проверки на серверах FunTime и HolyWorld):</p>
+                <ul>
+                    <li><strong>KillAura (FunTime Mode):</strong> Автоматические точные удары сквозь щиты с идеальной дистанцией, которая не вызывает подозрений у плагинов.</li>
+                    <li><strong>Velocity (Анти-откидывание):</strong> Полная или настраиваемая блокировка отдачи при ударах, позволяющая зажимать врагов в комбо.</li>
+                    <li><strong>Fly / Matrix Elytra:</strong> Беспалевный сверхбыстрый полет на элитрах и пешком без киков с сервера.</li>
+                </ul>
+            </div>
+
+            <!-- БЛОК 2: Визуалы -->
+            <div class="feature-card">
+                <h3>🔮 Передовые Визуалы (Visuals)</h3>
+                <p>Настройте внешний вид игры до мельчайших деталей. Наш HUD разработан под эстетику macOS и имеет плавные неоновые анимации:</p>
+                <ul>
+                    <li><strong>Player ESP & Glow:</strong> Полная подсветка игроков и мобов сквозь стены. Вы всегда будете знать, где прячется соперник или стоит сундук с лутом.</li>
+                    <li><strong>Motion Trails:</strong> Ослепительные неоново-зеленые шлейфы и кастомные частицы (партиклы), которые тянутся за вашим персонажем при беге, прыжках и критических ударах.</li>
+                    <li><strong>Fullbright (Яркий мир):</strong> Встроенное ночное зрение, убирающее любые тени и темноту в шахтах и на базах.</li>
+                </ul>
+            </div>
+
+            <!-- БЛОК 3: Вспомогательные функции -->
+            <div class="feature-card">
+                <h3>🎒 Автоматизация & Утилиты</h3>
+                <p>Упростите игровой процесс с помощью автоматических функций, реагирующих со скоростью в 0.001 секунды:</p>
+                <ul>
+                    <li><strong>AutoTotem / AutoGapple:</strong> Моментально берет тотем бессмертия в руку или ест золотое яблоко при критическом уровне здоровья.</li>
+                    <li><strong>Inventory Manager:</strong> Автоматически сортирует броню и ресурсы, выбрасывая мусор во время PvP-замесов.</li>
+                    <li><strong>X-Ray (Поиск руды):</strong> Просвечивает блоки, оставляя видимыми только ценные алмазы, золото и незерит.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="back-btn-container">
+            <a href="auth.html" class="btn btn-buy" style="text-decoration: none; padding: 16px 40px;">⚡ Начать доминировать</a>
+        </div>
+    </div>
+
+</body>
+</html>
