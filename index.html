@@ -6,6 +6,7 @@
     <title>Гаврик Client — Лучший чит на Minecraft</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Дополнительный стиль для фиолетовой кнопки скачивания на главном экране */
         .btn-download-hero {
             background: #660099;
             color: #ffffff;
@@ -18,6 +19,7 @@
             transform: translateY(-3px);
         }
 
+        /* ПОЛНОЭКРАННОЕ ВИДЕО ДЛЯ ВСЕХ СЕКЦИЙ И ОКON */
         .video-bg {
             position: fixed;
             top: 50%;
@@ -29,9 +31,10 @@
             z-index: -100;
             transform: translate(-50%, -50%);
             object-fit: cover;
-            filter: brightness(0.4) contrast(1.05);
+            filter: brightness(0.4) contrast(1.05); /* Приглушаем видео во всех подробностях для читаемости текста */
         }
 
+        /* УПРАВЛЕНИЕ БЕСШОВНЫМИ ОКНАМИ */
         .content-section {
             display: none;
             width: 100%;
@@ -41,6 +44,7 @@
             display: block;
         }
 
+        /* Общая темная неоновая карточка для аккаунтов */
         .account-card {
             background: rgba(10, 15, 10, 0.75);
             border: 1px solid rgba(0, 255, 0, 0.2);
@@ -93,6 +97,43 @@
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
         }
 
+        /* Стили для чекбокса Запомнить меня */
+        .remember-me-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            color: #a0b0a0;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .remember-me-container input {
+            margin-right: 8px;
+            accent-color: #00ff00;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Переключатель между авторизацией и регистрацией внизу форм */
+        .form-footer-link {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #a0b0a0;
+        }
+
+        .form-footer-link a {
+            color: #00ff00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .form-footer-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Блок данных в профиле */
         .profile-data {
             background: rgba(0, 0, 0, 0.5);
             border-left: 3px solid #00ff00;
@@ -122,10 +163,12 @@
 </head>
 <body>
 
+    <!-- ВИДЕО-ФОН ЗАКРЕПЛЕН ДЛЯ ВСЕХ СЕКЦИЙ И ПОДРОБНОСТЕЙ ОДНОВРЕМЕННО -->
     <video autoplay loop muted playsinline class="video-bg">
         <source src="video.mp4" type="video/mp4">
     </video>
 
+    <!-- Шапка сайта с мобильным меню -->
     <header>
         <div class="logo" onclick="switchScreen('hero-section')" style="cursor: pointer;">ГАВРИК<span>CLIENT</span> <mark class="version-tag">1.21.4</mark></div>
         
@@ -140,12 +183,14 @@
             <a href="features.html">Функции</a>
             <a href="#" onclick="alert('m6296778@gmail.com (ПН-ПТ 10:00-18:00 МСК)')">Поддержка</a>
             <a href="#" onclick="handleBuyRedirect()">Купить</a>
+            <a href="#" id="menuRegBtn" style="border-right: 1px solid rgba(255,255,255,0.1); padding-right: 10px;" onclick="switchScreen('register-section')">Регистрация</a>
             <a href="#" id="menuAuthBtn" class="nav-auth-btn" onclick="handleAccountNav()">Авторизация</a>
         </nav>
     </header>
 
     <main class="main-container">
         
+        <!-- ОКНО 1: ГЛАВНАЯ СТРАНИЦА (О НАС) -->
         <section id="hero-section" class="center-side hero-section content-section active">
             <div class="hero-content">
                 <span class="badge-opt">Лучшая оптимизация</span>
@@ -160,6 +205,7 @@
             </div>
         </section>
 
+        <!-- ОКНО 2: БЕСШОВНАЯ АВТОРИЗАЦИЯ -->
         <section id="auth-section" class="center-side content-section">
             <div class="account-card">
                 <h2>Авторизация</h2>
@@ -170,15 +216,55 @@
                     <input type="text" id="input-username" class="form-control" placeholder="Введите ваш логин">
                 </div>
                 
-                <div class="form-group" style="margin-bottom: 25px;">
+                <div class="form-group">
                     <label for="input-password">Пароль</label>
                     <input type="password" id="input-password" class="form-control" placeholder="Введите ваш пароль">
                 </div>
+
+                <!-- КНОПКА ЗАПОМИНАНИЯ ПАРОЛЯ -->
+                <label class="remember-me-container">
+                    <input type="checkbox" id="remember-auth">
+                    Запомнить логин и пароль
+                </label>
                 
                 <button class="btn btn-buy btn-block" style="width: 100%;" onclick="executeLogin()">Войти в систему</button>
+
+                <div class="form-footer-link">
+                    Ещё нет аккаунта? <a href="#" onclick="switchScreen('register-section')">Создать аккаунт</a>
+                </div>
             </div>
         </section>
 
+        <!-- ОКНО 3: БЕСШОВНАЯ РЕГИСТРАЦИЯ -->
+        <section id="register-section" class="center-side content-section">
+            <div class="account-card">
+                <h2>Регистрация</h2>
+                <p>Создайте личный профиль в системе Gavrik Client.</p>
+                
+                <div class="form-group">
+                    <label for="reg-username">Придумайте Логин</label>
+                    <input type="text" id="reg-username" class="form-control" placeholder="Например: uqeqo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-password">Придумайте Пароль</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="Введите надежный пароль">
+                </div>
+
+                <label class="remember-me-container">
+                    <input type="checkbox" id="remember-reg" checked>
+                    Сразу запомнить меня на этом устройстве
+                </label>
+                
+                <button class="btn btn-buy btn-block" style="width: 100%; background: #660099; border-color: #660099;" onclick="executeRegister()">Зарегистрироваться</button>
+
+                <div class="form-footer-link">
+                    Уже есть профиль? <a href="#" onclick="switchScreen('auth-section')">Войти в аккаунт</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ОКНО 4: БЕСШОВНЫЙ ЛИЧНЫЙ КАБИНЕТ -->
         <section id="profile-section" class="center-side content-section">
             <div class="account-card">
                 <h2>Личный кабинет</h2>
@@ -187,97 +273,4 @@
                 <div class="profile-data">
                     <div class="profile-line"><span>Пользователь:</span> <strong id="user-display">uqeqo</strong></div>
                     <div class="profile-line"><span>Уникальный UID:</span> <strong>#1337</strong></div>
-                    <div class="profile-line"><span>Привязка HWID:</span> <strong style="color: #00ff00;">OK</strong></div>
-                    <div class="profile-line"><span>Статус подписки:</span> <span class="sub-inactive">НЕ АКТИВНА</span></div>
-                </div>
-                
-                <button class="btn btn-secondary" style="width: 100%; background: #cc0000; color: #fff;" onclick="executeLogout()">🚪 Выйти из аккаунта</button>
-            </div>
-        </section>
-
-    </main>
-
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('dropdownMenu');
-            menu.classList.toggle('active');
-        }
-
-        function switchScreen(screenId) {
-            const sections = document.querySelectorAll('.content-section');
-            sections.forEach(sec => sec.classList.remove('active'));
-            
-            document.getElementById(screenId).classList.add('active');
-            
-            const menu = document.getElementById('dropdownMenu');
-            menu.classList.remove('active');
-        }
-
-        function handleBuyRedirect() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            if (isLoggedIn === 'true') {
-                window.location.href = 'buy.html';
-            } else {
-                alert('Для покупки софта необходимо авторизоваться в системе!');
-                switchScreen('auth-section');
-            }
-        }
-
-        function handleAccountNav() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            if (isLoggedIn === 'true') {
-                switchScreen('profile-section');
-            } else {
-                switchScreen('auth-section');
-            }
-        }
-
-        function executeLogin() {
-            const userVal = document.getElementById('input-username').value.trim();
-            const passVal = document.getElementById('input-password').value;
-
-            if (userVal.toLowerCase() === 'uqeqo' && passVal === '2708201327122001') {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('username', userVal);
-                
-                document.getElementById('input-username').value = '';
-                document.getElementById('input-password').value = '';
-                
-                updateAuthUI();
-                switchScreen('profile-section');
-            } else {
-                alert('Неверный логин или пароль!');
-            }
-        }
-
-        function executeLogout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('username');
-            
-            updateAuthUI();
-            switchScreen('hero-section');
-        }
-
-        function updateAuthUI() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const authBtn = document.getElementById('menuAuthBtn');
-            const userDisplay = document.getElementById('user-display');
-            
-            if (isLoggedIn === 'true') {
-                authBtn.innerText = 'Личный кабинет';
-                authBtn.style.background = '#006600';
-                if (userDisplay) {
-                    userDisplay.innerText = localStorage.getItem('username') || 'uqeqo';
-                }
-            } else {
-                authBtn.innerText = 'Авторизация';
-                authBtn.style.background = '';
-            }
-        }
-
-        window.onload = function() {
-            updateAuthUI();
-        };
-    </script>
-</body>
-</html>
+                    <div class="profile-line"><span>П
