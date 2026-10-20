@@ -6,7 +6,6 @@
     <title>Гаврик Client — Лучший чит на Minecraft</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Дополнительный стиль для фиолетовой кнопки скачивания на главном экране */
         .btn-download-hero {
             background: #660099;
             color: #ffffff;
@@ -18,13 +17,117 @@
             box-shadow: 0 0 25px #660099;
             transform: translateY(-3px);
         }
+
+        .video-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            filter: brightness(0.4) contrast(1.05);
+        }
+
+        .content-section {
+            display: none;
+            width: 100%;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .account-card {
+            background: rgba(10, 15, 10, 0.75);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 35px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .account-card h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .account-card p {
+            margin-bottom: 20px;
+            color: #a0b0a0;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #00ff00;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            background: #000000;
+            border: 1px solid #323232;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+
+        .profile-data {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .profile-line {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .profile-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .profile-line span {
+            color: #a0b0a0;
+        }
+
+        .sub-inactive {
+            color: #ff3333;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Шапка сайта с мобильным меню -->
+    <video autoplay loop muted playsinline class="video-bg">
+        <source src="video.mp4" type="video/mp4">
+    </video>
+
     <header>
-        <div class="logo">ГАВРИК<span>CLIENT</span> <mark class="version-tag">1.21.4</mark></div>
+        <div class="logo" onclick="switchScreen('hero-section')" style="cursor: pointer;">ГАВРИК<span>CLIENT</span> <mark class="version-tag">1.21.4</mark></div>
         
         <button class="menu-toggle" onclick="toggleMenu()">
             <div></div>
@@ -33,32 +136,65 @@
         </button>
 
         <nav class="dropdown-menu" id="dropdownMenu">
-            <a href="index.html">Главная</a>
+            <a href="#" onclick="switchScreen('hero-section')">Главная</a>
             <a href="features.html">Функции</a>
             <a href="#" onclick="alert('m6296778@gmail.com (ПН-ПТ 10:00-18:00 МСК)')">Поддержка</a>
             <a href="#" onclick="handleBuyRedirect()">Купить</a>
-            <a href="auth.html" id="menuAuthBtn" class="nav-auth-btn">Авторизация</a>
+            <a href="#" id="menuAuthBtn" class="nav-auth-btn" onclick="handleAccountNav()">Авторизация</a>
         </nav>
     </header>
 
     <main class="main-container">
-        <section class="center-side hero-section">
+        
+        <section id="hero-section" class="center-side hero-section content-section active">
             <div class="hero-content">
                 <span class="badge-opt">Лучшая оптимизация</span>
                 <h1>О нас</h1>
                 <p>Мы предоставляем вам лучший приватный клиент для комфортной игры, который даст вам наилучшие впечатления от игры и полный контроль над оппонентами.</p>
                 
-                <!-- Блок кнопок: теперь их три в ряд -->
                 <div class="hero-buttons">
                     <button class="btn btn-buy" onclick="handleBuyRedirect()">⚡ Купить софт</button>
-                    
-                    <!-- Новая кнопка скачивания лаунчера справа от основных -->
                     <a href="gavrik-client.zip" download class="btn btn-download-hero">📥 Скачать лаунчер</a>
-                    
                     <a href="features.html" class="btn btn-secondary" style="text-decoration: none;">Подробнее →</a>
                 </div>
             </div>
         </section>
+
+        <section id="auth-section" class="center-side content-section">
+            <div class="account-card">
+                <h2>Авторизация</h2>
+                <p>Войдите в свой аккаунт Gavrik Client для управления подписками.</p>
+                
+                <div class="form-group">
+                    <label for="input-username">Логин</label>
+                    <input type="text" id="input-username" class="form-control" placeholder="Введите ваш логин">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="input-password">Пароль</label>
+                    <input type="password" id="input-password" class="form-control" placeholder="Введите ваш пароль">
+                </div>
+                
+                <button class="btn btn-buy btn-block" style="width: 100%;" onclick="executeLogin()">Войти в систему</button>
+            </div>
+        </section>
+
+        <section id="profile-section" class="center-side content-section">
+            <div class="account-card">
+                <h2>Личный кабинет</h2>
+                <p>Добро пожаловать в панель управления софтом.</p>
+                
+                <div class="profile-data">
+                    <div class="profile-line"><span>Пользователь:</span> <strong id="user-display">uqeqo</strong></div>
+                    <div class="profile-line"><span>Уникальный UID:</span> <strong>#1337</strong></div>
+                    <div class="profile-line"><span>Привязка HWID:</span> <strong style="color: #00ff00;">OK</strong></div>
+                    <div class="profile-line"><span>Статус подписки:</span> <span class="sub-inactive">НЕ АКТИВНА</span></div>
+                </div>
+                
+                <button class="btn btn-secondary" style="width: 100%; background: #cc0000; color: #fff;" onclick="executeLogout()">🚪 Выйти из аккаунта</button>
+            </div>
+        </section>
+
     </main>
 
     <script>
@@ -67,24 +203,80 @@
             menu.classList.toggle('active');
         }
 
+        function switchScreen(screenId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            
+            document.getElementById(screenId).classList.add('active');
+            
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.remove('active');
+        }
+
         function handleBuyRedirect() {
             const isLoggedIn = localStorage.getItem('isLoggedIn');
             if (isLoggedIn === 'true') {
                 window.location.href = 'buy.html';
             } else {
                 alert('Для покупки софта необходимо авторизоваться в системе!');
-                window.location.href = 'auth.html';
+                switchScreen('auth-section');
+            }
+        }
+
+        function handleAccountNav() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                switchScreen('profile-section');
+            } else {
+                switchScreen('auth-section');
+            }
+        }
+
+        function executeLogin() {
+            const userVal = document.getElementById('input-username').value.trim();
+            const passVal = document.getElementById('input-password').value;
+
+            if (userVal.toLowerCase() === 'uqeqo' && passVal === '2708201327122001') {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', userVal);
+                
+                document.getElementById('input-username').value = '';
+                document.getElementById('input-password').value = '';
+                
+                updateAuthUI();
+                switchScreen('profile-section');
+            } else {
+                alert('Неверный логин или пароль!');
+            }
+        }
+
+        function executeLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            
+            updateAuthUI();
+            switchScreen('hero-section');
+        }
+
+        function updateAuthUI() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const authBtn = document.getElementById('menuAuthBtn');
+            const userDisplay = document.getElementById('user-display');
+            
+            if (isLoggedIn === 'true') {
+                authBtn.innerText = 'Личный кабинет';
+                authBtn.style.background = '#006600';
+                if (userDisplay) {
+                    userDisplay.innerText = localStorage.getItem('username') || 'uqeqo';
+                }
+            } else {
+                authBtn.innerText = 'Авторизация';
+                authBtn.style.background = '';
             }
         }
 
         window.onload = function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const authBtn = document.getElementById('menuAuthBtn');
-            if (isLoggedIn === 'true') {
-                authBtn.innerText = 'Личный кабинет';
-                authBtn.href = 'profile.html';
-                authBtn.style.background = '#006600';
-            }
+            updateAuthUI();
         };
     </script>
 </body>
